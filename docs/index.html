@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b0b0e">
+  <meta name="description" content="Documentation for EloraNotes, a calm minimal Markdown notes app for Linux, macOS and Windows.">
+  <title>EloraNotes Docs / Noxilith</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="docs.css">
+  <script src="../script.js" defer></script>
+</head>
+<body>
+  <div class="noise" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <a class="wordmark" href="../" aria-label="Noxilith home"><span class="mark"><span class="mark-initial">N</span><img class="mark-avatar" src="https://github.com/noxilith.png?size=120" alt="" width="27" height="27" onerror="this.remove()"></span><span>noxilith<span class="dot">.</span></span></a>
+    <div class="top-actions">
+      <a class="top-link top-secondary" href="../" aria-label="Back to site">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12l14 0"/><path d="M5 12l6 6"/><path d="M5 12l6 -6"/></svg>
+        <span class="top-label">Site</span>
+      </a>
+      <a class="top-link" href="https://github.com/noxilith" target="_blank" rel="noreferrer">
+        <svg class="top-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+        <span class="top-label">GitHub</span>
+        <svg class="icon arrow" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M17 7l-10 10"/><path d="M8 7l9 0l0 9"/></svg>
+      </a>
+      <a class="top-link top-kofi" href="https://ko-fi.com/noxilith" target="_blank" rel="noreferrer">
+        <svg class="top-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M11.351 2.715c-2.7 0-4.986.025-6.83.26C2.078 3.285 0 5.154 0 8.61c0 3.506.182 6.13 1.585 8.493 1.584 2.701 4.233 4.182 7.662 4.182h.83c4.209 0 6.494-2.234 7.637-4a9.5 9.5 0 0 0 1.091-2.338C21.792 14.688 24 12.22 24 9.208v-.415c0-3.247-2.13-5.507-5.792-5.87-1.558-.156-2.65-.208-6.857-.208m0 1.947c4.208 0 5.09.052 6.571.182 2.624.311 4.13 1.584 4.13 4v.39c0 2.156-1.792 3.844-3.87 3.844h-.935l-.156.649c-.208 1.013-.597 1.818-1.039 2.546-.909 1.428-2.545 3.064-5.922 3.064h-.805c-2.571 0-4.831-.883-6.078-3.195-1.09-2-1.298-4.155-1.298-7.506 0-2.181.857-3.402 3.012-3.714 1.533-.233 3.559-.26 6.39-.26m6.547 2.287c-.416 0-.65.234-.65.546v2.935c0 .311.234.545.65.545 1.324 0 2.051-.754 2.051-2s-.727-2.026-2.052-2.026m-10.39.182c-1.818 0-3.013 1.48-3.013 3.142 0 1.533.858 2.857 1.949 3.897.727.701 1.87 1.429 2.649 1.896a1.47 1.47 0 0 0 1.507 0c.78-.467 1.922-1.195 2.623-1.896 1.117-1.039 1.974-2.364 1.974-3.897 0-1.662-1.247-3.142-3.039-3.142-1.065 0-1.792.545-2.338 1.298-.493-.753-1.246-1.298-2.312-1.298"/></svg>
+        <span class="top-label">Ko-fi</span>
+      </a>
+    </div>
+  </header>
+
+  <div class="docs-shell">
+    <aside class="docs-nav" aria-label="Documentation">
+      <div class="docs-nav-group">
+        <span class="docs-nav-label">ELORANOTES</span>
+        <a href="#overview" class="is-current">Overview</a>
+        <a href="#features">Features</a>
+        <a href="#shortcuts">Keyboard shortcuts</a>
+        <a href="#install">Install</a>
+        <a href="#updates">Updates</a>
+        <a href="#source">Run from source</a>
+        <a href="#license">License</a>
+      </div>
+      <div class="docs-nav-group">
+        <span class="docs-nav-label">ELSEWHERE</span>
+        <a href="https://github.com/noxilith/EloraNotes" target="_blank" rel="noreferrer">Source repository</a>
+        <a href="https://github.com/noxilith/EloraNotes/releases/latest" target="_blank" rel="noreferrer">Latest release</a>
+        <a href="../">Back to site</a>
+      </div>
+    </aside>
+
+    <main class="docs-body">
+      <div class="docs-head">
+        <div class="eyebrow"><span>DOCS</span><span class="sep">/</span><span>ELORANOTES</span></div>
+        <h1>EloraNotes</h1>
+        <p class="docs-lede">A calm, minimalistic desktop notes app written in Rust with <code>eframe</code> / <code>egui</code>. Every note is a plain Markdown file on your disk, and the app stays out of the way while you write.</p>
+        <div class="docs-meta"><span>LINUX</span><span class="sep">/</span><span>MACOS</span><span class="sep">/</span><span>WINDOWS</span><span class="sep">/</span><span>GPL-3.0</span></div>
+      </div>
+
+      <section class="docs-section" id="overview">
+        <h2><span class="num">01</span> Overview</h2>
+        <p>EloraNotes is a cross-platform notes application built in Rust. It keeps a small, quiet interface: a narrow sidebar of notes on the left, one note in the editor, and a footer row for the daily note, the command palette and settings.</p>
+        <p>Notes are stored as portable <code>.md</code> files with lightweight YAML frontmatter, so you can read, back up or edit them in any other editor. Nothing is locked in a database.</p>
+        <h3>Where your notes live</h3>
+        <p>By default notes and the settings file (<code>.elora-settings.json</code>) live in <code>Documents/EloraNotes</code>, which is <code>C:\Users\&lt;you&gt;\Documents\EloraNotes</code> on Windows. Every install format uses that same folder, including the Flatpak, so the same notes open whichever build you launch. Notes from the older default folders are copied there on first launch, leaving the originals untouched.</p>
+        <p>To use a different folder, pass <code>--dir</code> or set <code>ELORA_NOTES_DIR</code>:</p>
+        <pre><code>elora --dir ~/Notes</code></pre>
+      </section>
+
+      <section class="docs-section" id="features">
+        <h2><span class="num">02</span> Features</h2>
+        <ul>
+          <li><strong>Write in Markdown, see it rendered.</strong> Switch between raw editing, side-by-side split view and a clean preview. The formatting bar inserts headings, bold, italics, lists, tasks, quotes, code blocks and wiki links in one click.</li>
+          <li><strong>Formatting that stacks.</strong> Markers nest, so <code>**==bold inside a glow==**</code> or <code>{color:#4ECDFF}**colored bold**{/color}</code> render as a single run carrying several styles. Headings can carry highlights and text colours too.</li>
+          <li><strong>Wiki links and backlinks.</strong> Write <code>[[Note Title]]</code> or <code>[[Note Title|Alias]]</code> to reference another note, click through to it in preview or split, and see everything that points back in the <em>Linked from</em> footer. <em>Show Links That Lead Nowhere</em> lists every wiki link whose target does not exist yet.</li>
+          <li><strong>A sidebar that fits more.</strong> Each note is one line — a small icon and its title — so about twice as many fit at once. Notes can be filed into collapsible folders that show their contents stepped in and remember whether they were folded.</li>
+          <li><strong>Pictures, by button, drop or paste.</strong> Insert an image from the formatting bar, drop a file on the window, or paste a screenshot with <code>Ctrl+V</code>; it is copied into an <code>attachments</code> folder beside your notes. In preview you can drag the corner of a picture to resize it, and the size is saved in the note.</li>
+          <li><strong>Task checklists you can click.</strong> Tick <code>- [ ]</code> boxes directly in preview or split view, with progress badges such as <code>2/3</code> on the note card and in the editor header.</li>
+          <li><strong>Pipe tables.</strong> A row of cells followed by <code>| --- | :---: | ---: |</code> is drawn as a table in preview and split, columns aligned the way the colons ask, and it exports as a real <code>&lt;table&gt;</code>.</li>
+          <li><strong>Daily notes and templates.</strong> Open or create today's dated note in one keystroke, or start from the Meeting Notes and Project Spec templates in the command palette.</li>
+          <li><strong>Export and import.</strong> Export the current note or the whole vault as standalone HTML pages, with pictures copied alongside and wiki links rewritten to point at the exported pages. Importing a folder of Markdown files copies them in as notes, frontmatter kept.</li>
+          <li><strong>Shared notes, Google-Docs style.</strong> Point the app at an EloraNotes server and its notes appear in the sidebar, with live edits, coloured carets and a presence list. The full server setup guide lives in the repository README.</li>
+          <li><strong>Five themes.</strong> Obsidian, Paper, Nordic, Matcha, or Matugen to pull colours from your wallpaper. Window size, position and preferences persist between launches.</li>
+          <li><strong>Updates itself.</strong> On launch it checks GitHub for a newer release, verifies the download runs, then installs it the way this copy was installed.</li>
+        </ul>
+      </section>
+
+      <section class="docs-section" id="shortcuts">
+        <h2><span class="num">03</span> Keyboard shortcuts</h2>
+        <table>
+          <thead>
+            <tr><th scope="col">Shortcut</th><th scope="col">Action</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><kbd>Ctrl K</kbd> / <kbd>Cmd K</kbd></td><td>Command palette and quick note switcher</td></tr>
+            <tr><td><kbd>Ctrl N</kbd> / <kbd>Cmd N</kbd></td><td>Create a new blank note</td></tr>
+            <tr><td><kbd>Ctrl D</kbd> / <kbd>Cmd D</kbd></td><td>Open or create today's daily note</td></tr>
+            <tr><td><kbd>Ctrl F</kbd> / <kbd>Cmd F</kbd></td><td>Find in the open note</td></tr>
+            <tr><td><kbd>Ctrl Shift F</kbd></td><td>Search all notes</td></tr>
+            <tr><td><kbd>Ctrl P</kbd> / <kbd>Cmd P</kbd></td><td>Pin or unpin the current note</td></tr>
+            <tr><td><kbd>Ctrl E</kbd> / <kbd>Cmd E</kbd></td><td>Toggle Markdown preview</td></tr>
+            <tr><td><kbd>Ctrl Shift E</kbd></td><td>Toggle split editor and live preview</td></tr>
+            <tr><td><kbd>Ctrl \</kbd> / <kbd>Cmd \</kbd></td><td>Toggle distraction-free focus mode</td></tr>
+            <tr><td><kbd>Tab</kbd> / <kbd>Shift Tab</kbd></td><td>Indent or unindent the caret's line, or every selected line</td></tr>
+            <tr><td><kbd>Enter</kbd></td><td>Start the next line with every quote and list marker the line sits in; numbered lists count on, a done task comes back unchecked</td></tr>
+            <tr><td><kbd>Shift Enter</kbd></td><td>Stay inside the same list item or quote, aligned under its text</td></tr>
+            <tr><td><kbd>Esc</kbd></td><td>Close the find bar or command palette, or clear active filters</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="docs-section" id="install">
+        <h2><span class="num">04</span> Install</h2>
+        <p>Every release ships an installer and a portable build for each platform. Grab them from the <a href="https://github.com/noxilith/EloraNotes/releases/latest" target="_blank" rel="noreferrer">latest release</a>.</p>
+        <table>
+          <thead>
+            <tr><th scope="col">Platform</th><th scope="col">Installer</th><th scope="col">Portable</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Linux</td><td><code>.flatpak</code></td><td><code>.AppImage</code> or <code>.tar.gz</code></td></tr>
+            <tr><td>Windows</td><td><code>-setup.exe</code></td><td><code>-portable.exe</code></td></tr>
+            <tr><td>macOS (Apple Silicon)</td><td><code>.dmg</code></td><td><code>.zip</code> with <code>EloraNotes.app</code></td></tr>
+          </tbody>
+        </table>
+
+        <h3>Linux</h3>
+        <p>The Flatpak is the installable build — it appears in your app menu and updates itself from this repository's releases.</p>
+        <pre><code>flatpak install --user ./EloraNotes-&lt;version&gt;-linux-x86_64.flatpak
+flatpak run io.github.noxilith.EloraNotes</code></pre>
+        <p>The bundle is self-hosted rather than published to Flathub, so <code>flatpak update</code> has no remote to pull from and will always say there is nothing to do. Updates arrive through the app's own <em>Update and restart</em>. To move to a newer bundle by hand, download it and run the same <code>flatpak install --user</code> command again.</p>
+        <p>The AppImage is the portable build: a single file you can keep anywhere.</p>
+        <pre><code>chmod +x EloraNotes-&lt;version&gt;-linux-x86_64.AppImage
+./EloraNotes-&lt;version&gt;-linux-x86_64.AppImage</code></pre>
+        <p>The tarball holds the bare <code>elora</code> binary if you would rather put it on your <code>PATH</code>:</p>
+        <pre><code>tar -xzf EloraNotes-0.7.0-linux-x86_64.tar.gz
+sudo install -Dm755 elora /usr/local/bin/elora</code></pre>
+
+        <h3>Windows</h3>
+        <p>Run the <code>-setup.exe</code> and follow the wizard. It installs for the current user only (no administrator prompt), adds Start Menu and optional desktop shortcuts, and registers EloraNotes under <em>Settings → Apps → Installed apps</em> so it can be uninstalled from there. The <code>-portable.exe</code> needs no install at all: put it in a folder and run it.</p>
+
+        <h3>macOS</h3>
+        <p>Open the <code>.dmg</code> and drag <strong>EloraNotes</strong> into <strong>Applications</strong>. The <code>.zip</code> is the portable build — unzip it and run <code>EloraNotes.app</code> from anywhere.</p>
+        <p>The builds are not notarised, so the first launch needs <strong>right-click → Open</strong> (or System Settings → Privacy &amp; Security → Open Anyway) once.</p>
+
+        <h3>Uninstalling</h3>
+        <ul>
+          <li><strong>Linux (Flatpak):</strong> <code>flatpak uninstall io.github.noxilith.EloraNotes</code>. Your notes stay in <code>~/Documents/EloraNotes</code>; the updatable copy of the app lives in <code>~/.local/share/EloraNotes</code> and can be deleted once the bundle is gone.</li>
+          <li><strong>Linux (AppImage or tarball):</strong> delete the file.</li>
+          <li><strong>Windows:</strong> Settings → Apps → Installed apps → EloraNotes → Uninstall.</li>
+          <li><strong>macOS:</strong> drag <code>EloraNotes.app</code> from Applications to the Trash.</li>
+        </ul>
+        <p>Your notes are plain <code>.md</code> files and stay where they are either way.</p>
+      </section>
+
+      <section class="docs-section" id="updates">
+        <h2><span class="num">05</span> Updates</h2>
+        <p>On launch the app compares its version with the latest GitHub release and, when one is newer, offers <em>Update now</em> or <em>Later</em>. What an update does depends on how the copy was installed:</p>
+        <ul>
+          <li><strong>AppImage:</strong> the new image is downloaded beside the old one, started once to prove it runs, then swapped in and relaunched.</li>
+          <li><strong>Windows setup:</strong> the new installer runs silently over the old install, keeping shortcuts and the uninstall entry correct, then the app restarts.</li>
+          <li><strong>macOS app bundle:</strong> the new <code>EloraNotes.app</code> replaces the old one, which is cleaned up on the next launch.</li>
+          <li><strong>Portable exe or tarball binary:</strong> only the executable is replaced, so it has to live in a writable folder.</li>
+          <li><strong>Flatpak:</strong> the bundle's launcher runs a writable copy from <code>~/.local/share/EloraNotes</code>, so the update replaces that binary and restarts like the portable build. The sandbox itself stays as installed.</li>
+        </ul>
+        <p><em>Settings → Updates</em> shows the version you are running, checks on demand and installs the result, so you never have to wait for the next launch.</p>
+      </section>
+
+      <section class="docs-section" id="source">
+        <h2><span class="num">06</span> Run from source</h2>
+        <p>You need a Rust toolchain. On Linux, NixOS and macOS the repository includes a launcher that sets up the environment:</p>
+        <pre><code>./run.sh</code></pre>
+        <p>Otherwise build and run with Cargo:</p>
+        <pre><code>cargo run --release</code></pre>
+        <p>The collaboration server builds on its own, without the GUI libraries a headless machine would not have:</p>
+        <pre><code>cargo build --release --no-default-features --bin elora-server
+ELORA_SERVER_DIR=~/.config/elora-server ./target/release/elora-server init
+./target/release/elora-server run</code></pre>
+        <p>Notes and settings are found in <code>Documents/EloraNotes</code> unless you point the app elsewhere with <code>--dir</code> or <code>ELORA_NOTES_DIR</code>.</p>
+      </section>
+
+      <section class="docs-section" id="license">
+        <h2><span class="num">07</span> License</h2>
+        <p>EloraNotes is licensed under the GNU General Public License v3.0 or later. Bundled fonts keep their own licenses: DejaVu and Tabler Icons.</p>
+        <p>Source, issues and releases: <a href="https://github.com/noxilith/EloraNotes" target="_blank" rel="noreferrer">github.com/noxilith/EloraNotes</a>.</p>
+      </section>
+    </main>
+  </div>
+
+  <footer class="footer section-wrap"><a class="wordmark" href="../"><span class="mark"><span class="mark-initial">N</span><img class="mark-avatar" src="https://github.com/noxilith.png?size=120" alt="" width="27" height="27" onerror="this.remove()"></span><span>noxilith<span class="dot">.</span></span></a><span>DOCS FOR ELORANOTES</span><a href="#">BACK TO TOP <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 5l0 14"/><path d="M18 11l-6 -6"/><path d="M6 11l6 -6"/></svg></a><span class="copyright">© <span id="year"></span> NOXILITH</span></footer>
+</body>
+</html>

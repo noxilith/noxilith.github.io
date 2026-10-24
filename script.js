@@ -15,7 +15,8 @@ if ("IntersectionObserver" in window && !reduceMotion) {
   revealItems.forEach((item) => item.classList.add("is-visible"));
 }
 
-document.querySelector("#year").textContent = new Date().getFullYear();
+const yearEl = document.querySelector("#year");
+if (yearEl) yearEl.textContent = new Date().getFullYear();
 
 /* Projects — pulled from the GitHub API, newest/best first. */
 const GITHUB_USER = "noxilith";
@@ -82,6 +83,8 @@ function renderContributions(data) {
 }
 
 async function loadContributions() {
+  if (!heatmap) return;
+
   try {
     const cached = JSON.parse(localStorage.getItem(CONTRIBUTIONS_CACHE_KEY) || "null");
     if (cached && Date.now() - cached.storedAt < CONTRIBUTIONS_CACHE_TTL && cached.data?.contributions?.length) {
