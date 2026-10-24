@@ -167,7 +167,7 @@ function buildRepoCard(repo, index, visual) {
   link.target = "_blank";
   link.rel = "noreferrer";
   link.setAttribute("aria-label", `View ${repo.name} on GitHub`);
-  link.textContent = "↗";
+  link.innerHTML = '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M17 7l-10 10"/><path d="M8 7l9 0l0 9"/></svg>';
 
   info.append(text, link);
   card.append(visual, info);
