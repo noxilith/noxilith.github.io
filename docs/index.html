@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0b0b0e">
-  <meta name="description" content="Documentation for EloraNotes, a calm minimal Markdown notes app for Linux, macOS and Windows.">
+  <meta name="description" content="The complete guide to EloraNotes: writing, Markdown, folders, tags, pictures, tables, wiki links, shared notes, server setup, settings and every keyboard shortcut.">
   <title>EloraNotes Docs / Noxilith</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -38,13 +38,49 @@
   <div class="docs-shell">
     <aside class="docs-nav" aria-label="Documentation">
       <div class="docs-nav-group">
-        <span class="docs-nav-label">ELORANOTES</span>
+        <span class="docs-nav-label">START</span>
         <a href="#overview" class="is-current">Overview</a>
-        <a href="#features">Features</a>
+        <a href="#getting-started">Getting started</a>
+        <a href="#window">The window</a>
+        <a href="#writing">Writing and saving</a>
+        <a href="#files">Files on disk</a>
+      </div>
+      <div class="docs-nav-group">
+        <span class="docs-nav-label">WRITING</span>
+        <a href="#markdown">Markdown reference</a>
+        <a href="#formatting">Formatting bar</a>
+        <a href="#pictures">Pictures</a>
+        <a href="#tables">Tables</a>
+        <a href="#views">Views and find</a>
+        <a href="#links">Wiki links and graph</a>
+      </div>
+      <div class="docs-nav-group">
+        <span class="docs-nav-label">ORGANIZING</span>
+        <a href="#folders">Folders</a>
+        <a href="#tags">Tags, search and sort</a>
+        <a href="#cards">Pin, cards and trash</a>
+        <a href="#daily">Daily notes and templates</a>
+        <a href="#palette">Command palette</a>
+        <a href="#export">Export and import</a>
+      </div>
+      <div class="docs-nav-group">
+        <span class="docs-nav-label">SHARING</span>
+        <a href="#sharing">Shared notes</a>
+        <a href="#identity">Name, identifier and key</a>
+        <a href="#privacy">Who can see a note</a>
+        <a href="#server">Hosting a server</a>
+        <a href="#admin">Server upkeep</a>
+        <a href="#connect-trouble">Stuck on Connecting…</a>
+      </div>
+      <div class="docs-nav-group">
+        <span class="docs-nav-label">REFERENCE</span>
+        <a href="#settings">Settings</a>
+        <a href="#themes">Themes</a>
         <a href="#shortcuts">Keyboard shortcuts</a>
-        <a href="#install">Install</a>
         <a href="#updates">Updates</a>
+        <a href="#install">Install and uninstall</a>
         <a href="#source">Run from source</a>
+        <a href="#faq">FAQ</a>
         <a href="#license">License</a>
       </div>
       <div class="docs-nav-group">
@@ -59,69 +95,827 @@
       <div class="docs-head">
         <div class="eyebrow"><span>DOCS</span><span class="sep">/</span><span>ELORANOTES</span></div>
         <h1>EloraNotes</h1>
-        <p class="docs-lede">A calm, minimalistic desktop notes app written in Rust with <code>eframe</code> / <code>egui</code>. Every note is a plain Markdown file on your disk, and the app stays out of the way while you write.</p>
+        <p class="docs-lede">The complete guide to EloraNotes: a calm, local-first Markdown notes app written in Rust with <code>eframe</code> / <code>egui</code>. Every note is a plain file on your disk, every feature works offline, and sharing is something you switch on rather than something the app assumes.</p>
         <div class="docs-meta"><span>LINUX</span><span class="sep">/</span><span>MACOS</span><span class="sep">/</span><span>WINDOWS</span><span class="sep">/</span><span>GPL-3.0</span></div>
       </div>
 
+      <!-- 01 ------------------------------------------------------------ -->
       <section class="docs-section" id="overview">
         <h2><span class="num">01</span> Overview</h2>
-        <p>EloraNotes is a cross-platform notes application built in Rust. It keeps a small, quiet interface: a narrow sidebar of notes on the left, one note in the editor, and a footer row for the daily note, the command palette and settings.</p>
-        <p>Notes are stored as portable <code>.md</code> files with lightweight YAML frontmatter, so you can read, back up or edit them in any other editor. Nothing is locked in a database.</p>
-        <h3>Where your notes live</h3>
-        <p>By default notes and the settings file (<code>.elora-settings.json</code>) live in <code>Documents/EloraNotes</code>, which is <code>C:\Users\&lt;you&gt;\Documents\EloraNotes</code> on Windows. Every install format uses that same folder, including the Flatpak, so the same notes open whichever build you launch. Notes from the older default folders are copied there on first launch, leaving the originals untouched.</p>
-        <p>To use a different folder, pass <code>--dir</code> or set <code>ELORA_NOTES_DIR</code>:</p>
-        <pre><code>elora --dir ~/Notes</code></pre>
-      </section>
+        <p>EloraNotes keeps your notes as portable <code>.md</code> files with a short YAML frontmatter block. There is no database and no account: copy the folder and you have everything, open a note in any Markdown editor, or put the folder on a USB stick and carry it between machines.</p>
+        <p>The app is local-first by design. It works completely offline; it only touches the network when you ask it to — when it checks GitHub for a new release, when a note points at a picture on the web, or when you connect to a shared library. Settings, themes and window geometry are stored beside the notes, not in a server somewhere.</p>
+        <p>Sharing is optional and deliberately small. One machine runs <code>elora-server</code>; everybody else points the app at its address, port and password. Notes in that library edit live, with coloured carets and names, and each note can be open to everybody, closed to its owner, or shared with a few named people. The server keeps the library as ordinary <code>.md</code> files too.</p>
 
-      <section class="docs-section" id="features">
-        <h2><span class="num">02</span> Features</h2>
+        <h3>What the app can do</h3>
         <ul>
-          <li><strong>Write in Markdown, see it rendered.</strong> Switch between raw editing, side-by-side split view and a clean preview. The formatting bar inserts headings, bold, italics, lists, tasks, quotes, code blocks and wiki links in one click.</li>
-          <li><strong>Formatting that stacks.</strong> Markers nest, so <code>**==bold inside a glow==**</code> or <code>{color:#4ECDFF}**colored bold**{/color}</code> render as a single run carrying several styles. Headings can carry highlights and text colours too.</li>
-          <li><strong>Wiki links and backlinks.</strong> Write <code>[[Note Title]]</code> or <code>[[Note Title|Alias]]</code> to reference another note, click through to it in preview or split, and see everything that points back in the <em>Linked from</em> footer. <em>Show Links That Lead Nowhere</em> lists every wiki link whose target does not exist yet.</li>
-          <li><strong>A sidebar that fits more.</strong> Each note is one line — a small icon and its title — so about twice as many fit at once. Notes can be filed into collapsible folders that show their contents stepped in and remember whether they were folded.</li>
-          <li><strong>Pictures, by button, drop or paste.</strong> Insert an image from the formatting bar, drop a file on the window, or paste a screenshot with <code>Ctrl+V</code>; it is copied into an <code>attachments</code> folder beside your notes. In preview you can drag the corner of a picture to resize it, and the size is saved in the note.</li>
-          <li><strong>Task checklists you can click.</strong> Tick <code>- [ ]</code> boxes directly in preview or split view, with progress badges such as <code>2/3</code> on the note card and in the editor header.</li>
-          <li><strong>Pipe tables.</strong> A row of cells followed by <code>| --- | :---: | ---: |</code> is drawn as a table in preview and split, columns aligned the way the colons ask, and it exports as a real <code>&lt;table&gt;</code>.</li>
-          <li><strong>Daily notes and templates.</strong> Open or create today's dated note in one keystroke, or start from the Meeting Notes and Project Spec templates in the command palette.</li>
-          <li><strong>Export and import.</strong> Export the current note or the whole vault as standalone HTML pages, with pictures copied alongside and wiki links rewritten to point at the exported pages. Importing a folder of Markdown files copies them in as notes, frontmatter kept.</li>
-          <li><strong>Shared notes, Google-Docs style.</strong> Point the app at an EloraNotes server and its notes appear in the sidebar, with live edits, coloured carets and a presence list. The full server setup guide lives in the repository README.</li>
-          <li><strong>Five themes.</strong> Obsidian, Paper, Nordic, Matcha, or Matugen to pull colours from your wallpaper. Window size, position and preferences persist between launches.</li>
-          <li><strong>Updates itself.</strong> On launch it checks GitHub for a newer release, verifies the download runs, then installs it the way this copy was installed.</li>
+          <li><strong>Write Markdown with live rendering.</strong> Edit raw, work in <a href="#views">Split View</a>, or read in a clean <a href="#views">Preview</a> where tasks tick and wiki links open.</li>
+          <li><strong>Format without memorising syntax.</strong> A <a href="#formatting">formatting bar</a> and a right-click menu insert headings, bold, italics, underline, strikethrough, code, lists, tasks, quotes, wiki links, text colours and glowing highlights.</li>
+          <li><strong>Find things again.</strong> <a href="#folders">Folders</a>, <a href="#tags">tags</a> with counts, a filter menu, fuzzy search, pinned notes and a Trash that can restore.</li>
+          <li><strong>Connect notes.</strong> <a href="#links">Wiki links</a>, backlinks, a note graph, and a report of every link that points at a note you have not written yet.</li>
+          <li><strong>Keep pictures and tables in the note.</strong> Drop, paste or choose a <a href="#pictures">picture</a>; write pipe <a href="#tables">tables</a> that align and export properly.</li>
+          <li><strong>Take it with you.</strong> Export one note or the whole vault as a standalone <a href="#export">HTML site</a>, or import a folder of Markdown files.</li>
+          <li><strong>Share a library.</strong> <a href="#sharing">Live editing</a>, presence, per-note <a href="#privacy">privacy</a>, and an identity that survives renaming and follows you to another computer.</li>
+          <li><strong>Make it yours.</strong> Seven <a href="#themes">themes</a>, per-part colour overrides, text size, glow strength, compact or tall note cards.</li>
+          <li><strong>Update itself.</strong> The app checks GitHub on launch, verifies the downloaded build runs, and installs it the way this copy was installed.</li>
         </ul>
+
+        <div class="docs-callout">
+          <span class="label">THE SHORT VERSION</span>
+          <p>Install it, type, and everything is already saved. The rest of this page is for the day you want folders, a picture, a table, or a friend in the same note.</p>
+        </div>
       </section>
 
-      <section class="docs-section" id="shortcuts">
-        <h2><span class="num">03</span> Keyboard shortcuts</h2>
+      <!-- 02 ------------------------------------------------------------ -->
+      <section class="docs-section" id="getting-started">
+        <h2><span class="num">02</span> Getting started</h2>
+        <p>Download a build for your platform from the <a href="https://github.com/noxilith/EloraNotes/releases/latest" target="_blank" rel="noreferrer">latest release</a>; <a href="#install">Install</a> lists the formats and the one-time macOS prompt. Launch it and the notes folder is created for you.</p>
+
+        <h3>The first launch</h3>
+        <p>On a fresh machine EloraNotes creates <code>Documents/EloraNotes</code> and seeds three notes so the window is not empty:</p>
+        <ul>
+          <li><strong>Welcome to EloraNotes</strong> — a short tour of the palette, views, tasks and daily note, with links to the other two.</li>
+          <li><strong>Reading &amp; Project Ideas</strong> — a scratch note the welcome note links to.</li>
+          <li><strong>Daily Scratchpad</strong> — a second linked note.</li>
+        </ul>
+        <p>They are ordinary notes: rename them, empty them or trash them. Nothing depends on them.</p>
+
+        <h3>A first note in ten seconds</h3>
+        <ul>
+          <li>Press <kbd>Ctrl N</kbd> (<kbd>Cmd N</kbd> on macOS). A note titled <em>Untitled</em> appears, selected and ready to type.</li>
+          <li>Click the title and type a real one. Spaces are fine; the title is not a file name.</li>
+          <li>Write in the body. Everything is written to disk as you type — there is no Save button and no unsaved state to lose.</li>
+          <li>Press <kbd>Ctrl E</kbd> to see it rendered, <kbd>Ctrl Shift E</kbd> for side-by-side, and <kbd>Ctrl K</kbd> to jump to another note.</li>
+        </ul>
+
+        <h3>Where everything lives</h3>
         <table>
-          <thead>
-            <tr><th scope="col">Shortcut</th><th scope="col">Action</th></tr>
-          </thead>
+          <thead><tr><th scope="col">What</th><th scope="col">Where</th></tr></thead>
           <tbody>
-            <tr><td><kbd>Ctrl K</kbd> / <kbd>Cmd K</kbd></td><td>Command palette and quick note switcher</td></tr>
-            <tr><td><kbd>Ctrl N</kbd> / <kbd>Cmd N</kbd></td><td>Create a new blank note</td></tr>
-            <tr><td><kbd>Ctrl D</kbd> / <kbd>Cmd D</kbd></td><td>Open or create today's daily note</td></tr>
-            <tr><td><kbd>Ctrl F</kbd> / <kbd>Cmd F</kbd></td><td>Find in the open note</td></tr>
-            <tr><td><kbd>Ctrl Shift F</kbd></td><td>Search all notes</td></tr>
-            <tr><td><kbd>Ctrl P</kbd> / <kbd>Cmd P</kbd></td><td>Pin or unpin the current note</td></tr>
-            <tr><td><kbd>Ctrl E</kbd> / <kbd>Cmd E</kbd></td><td>Toggle Markdown preview</td></tr>
-            <tr><td><kbd>Ctrl Shift E</kbd></td><td>Toggle split editor and live preview</td></tr>
-            <tr><td><kbd>Ctrl \</kbd> / <kbd>Cmd \</kbd></td><td>Toggle distraction-free focus mode</td></tr>
-            <tr><td><kbd>Tab</kbd> / <kbd>Shift Tab</kbd></td><td>Indent or unindent the caret's line, or every selected line</td></tr>
-            <tr><td><kbd>Enter</kbd></td><td>Start the next line with every quote and list marker the line sits in; numbered lists count on, a done task comes back unchecked</td></tr>
-            <tr><td><kbd>Shift Enter</kbd></td><td>Stay inside the same list item or quote, aligned under its text</td></tr>
-            <tr><td><kbd>Esc</kbd></td><td>Close the find bar or command palette, or clear active filters</td></tr>
+            <tr><td>Notes</td><td><code>Documents/EloraNotes</code> — <code>C:\Users\&lt;you&gt;\Documents\EloraNotes</code> on Windows</td></tr>
+            <tr><td>Settings</td><td><code>.elora-settings.json</code> inside the notes folder</td></tr>
+            <tr><td>Pictures</td><td><code>attachments/</code> inside the notes folder</td></tr>
+            <tr><td>Markdown import</td><td>Put files in <code>Import/</code>, then run the import command</td></tr>
+            <tr><td>HTML export</td><td>Downloads by default, or a folder you pick once and it remembers</td></tr>
+          </tbody>
+        </table>
+        <p>Every install format uses the same folder, including the Flatpak, so the same notes open whichever build you launch. Notes and settings from the old default folders (<code>~/.config/eloranotes</code>, <code>~/eloranotes</code>, <code>~/.EloraNotes</code>) are copied in on first launch; the originals are left untouched and nothing already in the new folder is overwritten.</p>
+
+        <h3>Using a different folder</h3>
+        <p>Pass <code>--dir</code>, or set <code>ELORA_NOTES_DIR</code>, and the app uses that folder for notes and settings instead:</p>
+        <pre><code>elora --dir ~/Notes
+ELORA_NOTES_DIR=~/Notes elora</code></pre>
+        <p>One folder is open at a time. Switching folders means relaunching with the other path; there is no vault switcher inside the window.</p>
+
+        <div class="docs-callout">
+          <span class="label">OFFLINE UNLESS YOU SAY OTHERWISE</span>
+          <p>The only automatic network request is the update check against GitHub on launch (and it stays silent when offline). Pictures with <code>http(s)</code> sources are downloaded when a note is drawn, and a shared library connects only when you press <strong>Connect</strong>.</p>
+        </div>
+      </section>
+
+      <!-- 03 ------------------------------------------------------------ -->
+      <section class="docs-section" id="window">
+        <h2><span class="num">03</span> The window</h2>
+        <p>The window is two panes: a fixed, narrow sidebar of notes on the left and one note on the right. There are no tabs and no split panes of different notes; the note you select is the note you have open.</p>
+
+        <h3>The sidebar</h3>
+        <ul>
+          <li><strong>The logo row</strong> holds <code>elora notes</code> and the accent <strong>New</strong> button. The sidebar does not resize, so the list never shifts around while the window does.</li>
+          <li><strong>Search</strong> filters the list as you type. It looks at titles, bodies and tags; see <a href="#tags">Tags, search and sort</a> for the exact rules.</li>
+          <li><strong>Notes, Pinned and Trash</strong> switch sections and carry live counts. The trash button appears once something is in the Trash or you are looking at it.</li>
+          <li><strong>Filter</strong> opens one menu of every tag with how many notes carry it. The small arrows button beside it orders each group by last edited, created or title.</li>
+          <li><strong>The list</strong> draws pinned notes first, then the shared library and its folders, then local folders alphabetically, then unfiled notes under <strong>All Notes</strong>, then the Trash.</li>
+          <li><strong>The footer</strong> holds four buttons: today's daily note, the command palette, the Ko-fi tip jar (which opens <a href="https://ko-fi.com/noxilith" target="_blank" rel="noreferrer">ko-fi.com/noxilith</a> in your browser), and Settings.</li>
+        </ul>
+
+        <h3>The note header</h3>
+        <p>Above the title sits one row of controls that belong to the open note:</p>
+        <ul>
+          <li><strong>Focus</strong> hides the sidebar; while hidden the same button says <strong>Sidebar</strong> and brings it back.</li>
+          <li><strong>Note icon</strong> opens a searchable picker of Tabler glyphs, shows the chosen glyph on the note's card, and can remove it again.</li>
+          <li><strong>Folder menu</strong> files the note under an existing folder, creates a new one, takes it out of its folder, or moves it to a shared library.</li>
+          <li><strong>Lock</strong> — only on a shared note — opens <a href="#privacy">Who can see this note</a>.</li>
+          <li><strong>Statistics</strong> show when the note was last edited, its word and character counts, an estimated reading time, and task progress such as <code>2/3</code>.</li>
+          <li><strong>Pin, view toggles, copy and trash</strong>: pin the note, switch between Edit, Split and Preview, copy its Markdown, or move it to the Trash (with a confirmation).</li>
+        </ul>
+        <p>The title is a normal text field. Renaming changes the note's title — the card, the editor heading and exports — but not its file name on disk. Wiki links match the title, not the file, so a link that spells the old title stops resolving; the <a href="#links">broken-link report</a> lists them.</p>
+
+        <h3>Under the title</h3>
+        <ul>
+          <li><strong>Tag chips</strong> with an <strong>+ add #tag</strong> field. Click a chip to filter by it, or its × to remove it.</li>
+          <li><strong>The find bar</strong>, when open, with the match count and previous/next arrows.</li>
+          <li><strong>The formatting bar</strong>, unless you turned it off in Settings.</li>
+          <li><strong>The editor</strong> or, in Preview, the rendered note.</li>
+          <li><strong>Linked from</strong> at the bottom lists every note whose wiki links point here; click one to jump to it.</li>
+          <li>On a shared note, a <strong>presence row</strong> above the editor shows who else has it open right now.</li>
+        </ul>
+        <p>Short messages — "Copied Markdown to clipboard", "Imported 3 note(s)", a failed save — appear as a floating notice and fade by themselves. Focus mode keeps them inside the window instead of running off the edge.</p>
+      </section>
+
+      <!-- 04 ------------------------------------------------------------ -->
+      <section class="docs-section" id="writing">
+        <h2><span class="num">04</span> Writing and saving</h2>
+        <p>Put the caret in the body and type. Each change is persisted to the note's <code>.md</code> file straight away, so closing the window, losing power or killing the process cannot lose what you already wrote. There is no draft state and no Save button.</p>
+
+        <h3>What the editor does for you</h3>
+        <table>
+          <thead><tr><th scope="col">Action</th><th scope="col">What happens</th></tr></thead>
+          <tbody>
+            <tr><td><kbd>Tab</kbd></td><td>Indents the caret's line, or every line the selection touches, by one level.</td></tr>
+            <tr><td><kbd>Shift Tab</kbd></td><td>Takes one level of indentation away from the same lines.</td></tr>
+            <tr><td><kbd>Enter</kbd></td><td>Starts the next line with every quote and list marker the current line is nested in: a bullet stays a bullet, <code>1.</code> becomes <code>2.</code>, a finished task comes back unchecked. On an empty item or quote it removes just that level instead of leaving an empty one.</td></tr>
+            <tr><td><kbd>Shift Enter</kbd></td><td>Stays inside the same item or quote: a plain new line with no repeated marker, lined up under the item's text.</td></tr>
+            <tr><td><kbd>Ctrl Z</kbd></td><td>Undo, per note. <kbd>Ctrl Shift Z</kbd> or <kbd>Ctrl Y</kbd> redoes.</td></tr>
+            <tr><td><kbd>Ctrl V</kbd></td><td>A copied screenshot or picture file is added to the note as an attachment instead of being pasted as text.</td></tr>
+            <tr><td>Right-click</td><td>The formatting menu, including glow presets and text colour, at the caret or over the selection.</td></tr>
+          </tbody>
+        </table>
+        <p>Indentation is spaces, so the Markdown looks the same in any other editor. A list inside a quote inside a list item keeps every level when you press Enter; <kbd>Shift Enter</kbd> keeps the markers it is inside and lines the text up under them. Undo history is kept per note for the session; it is not written to disk, so reopening the app starts a fresh history.</p>
+
+        <h3>New notes</h3>
+        <p><strong>New</strong> creates a blank note titled <em>Untitled</em>. It joins the folder of the note you had open, and it keeps the tag you are filtering by, so a note made while looking at <code>#project</code> starts life as a project note. Made while Pinned is selected, it starts pinned. While a shared note is open, <strong>New</strong> creates the note on the server rather than on your disk.</p>
+
+        <h3>Copying a note out</h3>
+        <p>The copy button in the header (or <strong>Copy Current Note Markdown to Clipboard</strong> in the palette) copies the note as a complete Markdown document, with its title as a <code># Heading</code> above the body. It is the quickest way to paste a note into a chat, an email or another app.</p>
+
+        <div class="docs-callout">
+          <span class="label">A NOTE ABOUT EXTERNAL EDITS</span>
+          <p>The app reads notes at startup and writes the open note as you type. If you edit a <code>.md</code> file by hand, do it while EloraNotes is closed; an open note in the app will overwrite the file on its next keystroke. The shared server re-reads a note's body when it is next opened, so its files can be edited between sessions too.</p>
+        </div>
+      </section>
+
+      <!-- 05 ------------------------------------------------------------ -->
+      <section class="docs-section" id="files">
+        <h2><span class="num">05</span> Files on disk</h2>
+        <p>Every note is one <code>.md</code> file:</p>
+        <pre><code>---
+title: "Reading &amp; Project Ideas"
+pinned: false
+trashed: false
+tags: [reading, ideas]
+folder: "Someday"
+icon: book
+created_at: 2026-10-24T09:12:44.318Z
+updated_at: 2026-10-24T11:03:10.904Z
+---
+Books, tools and things to build.
+
+- [ ] Finish **The Design of Everyday Things**
+- [x] Try [[Pipe Tables]] in a real note
+
+#reading #ideas</code></pre>
+        <p>The block between the two <code>---</code> lines is the note's metadata; everything after it is the body you write. A file without frontmatter still opens — its title comes from the file name — and is given frontmatter the first time the app saves it.</p>
+
+        <table>
+          <thead><tr><th scope="col">Field</th><th scope="col">Meaning</th></tr></thead>
+          <tbody>
+            <tr><td><code>title</code></td><td>What the card, wiki links and export call the note.</td></tr>
+            <tr><td><code>folder</code></td><td>The folder it is filed under; absent means unfiled.</td></tr>
+            <tr><td><code>pinned</code></td><td>Whether it sits in the Pinned section.</td></tr>
+            <tr><td><code>trashed</code></td><td>Whether it is in the Trash. The file stays in the folder.</td></tr>
+            <tr><td><code>tags</code></td><td>Tags assigned with the chips. Inline <code>#tags</code> in the body count too.</td></tr>
+            <tr><td><code>icon</code></td><td>The Tabler glyph shown on the card and in the header.</td></tr>
+            <tr><td><code>created_at</code>, <code>updated_at</code></td><td>Timestamps used by the Created and Last edited sort orders.</td></tr>
+            <tr><td><code>owner</code>, <code>owner_key</code></td><td>On a shared note: who owns it, and the public key that decides it.</td></tr>
+            <tr><td><code>private</code>, <code>shared_with</code>, <code>shared_keys</code></td><td>On a shared note: whether it is restricted, the names to print, and the keys allowed in.</td></tr>
+          </tbody>
+        </table>
+
+        <h3>File names</h3>
+        <p>A new note is named from its title plus the moment it was created, for example <code>meeting-notes-20261024-091244.md</code>. The name is fixed at creation: renaming the note changes <code>title:</code>, not the file, so backups, pictures and the server's copy keep a stable path. Wiki links match titles rather than file names, so renaming a note can still break a link that spells the old title. Two notes created in the same second get a numeric suffix.</p>
+
+        <h3>The settings file</h3>
+        <p><code>.elora-settings.json</code> holds the theme, text size, colour overrides, glow, card style, sort order, folded folders, the window's size and position, the last export folder, and — if you use a shared library — the server address, password, your display name and your identifier. It is plain JSON, not encrypted, so treat the notes folder like you would a password file if you have connected to a server. Deleting the file resets the look and the connection; deleting it does not touch any note.</p>
+
+        <h3>Pictures and the Import folder</h3>
+        <ul>
+          <li><code>attachments/</code> holds every picture added by the button, a drop or a paste. Notes refer to them by relative path.</li>
+          <li><code>Import/</code> is where you drop <code>.md</code> files for the import command. It is created the first time you run an import.</li>
+          <li>Nothing else is added to the folder by the app. There are no caches or databases to clean up.</li>
+        </ul>
+        <p>To back up your notes, copy the whole folder; <a href="#server">a shared library</a> is a folder too. Keep the server's own data folder as well if you run one — it holds the certificate, the people list and the library.</p>
+      </section>
+
+      <!-- 06 ------------------------------------------------------------ -->
+      <section class="docs-section" id="markdown">
+        <h2><span class="num">06</span> Markdown reference</h2>
+        <p>EloraNotes understands a focused dialect of Markdown. The table below is the whole language.</p>
+        <table>
+          <thead><tr><th scope="col">Write</th><th scope="col">Get</th></tr></thead>
+          <tbody>
+            <tr><td><code># Heading</code></td><td>A first-level heading. <code>##</code> and <code>###</code> are drawn at their own sizes in Preview; all six levels are real headings in the HTML export.</td></tr>
+            <tr><td><code>**bold**</code></td><td><strong>Bold</strong>.</td></tr>
+            <tr><td><code>*italic*</code></td><td><em>Italic</em>.</td></tr>
+            <tr><td><code>***both***</code></td><td>Bold and italic together.</td></tr>
+            <tr><td><code>__underline__</code></td><td>Underlined text.</td></tr>
+            <tr><td><code>~~gone~~</code></td><td><s>Struck through</s>.</td></tr>
+            <tr><td><code>`code`</code></td><td>Inline code, drawn in the monospace face.</td></tr>
+            <tr><td><code>==glow==</code></td><td>A highlight in the glow colour from Settings, halo included.</td></tr>
+            <tr><td><code>=={#4ECDFF}cyan glow==</code></td><td>A highlight in that exact colour; the value is <code>#RRGGBB</code>.</td></tr>
+            <tr><td><code>{color:#FF7A90}red text{/color}</code></td><td>Text in that colour. Close it with <code>{/color}</code>.</td></tr>
+            <tr><td><code>[[Note Title]]</code></td><td>A wiki link to that note.</td></tr>
+            <tr><td><code>[[Note Title|shown words]]</code></td><td>A wiki link that reads differently from its target.</td></tr>
+            <tr><td><code>#tag</code></td><td>A tag. It must start with a letter; letters, digits, <code>-</code>, <code>_</code> and <code>/</code> are kept, and the tag is lowercased.</td></tr>
+            <tr><td><code>- item</code> or <code>* item</code></td><td>A bullet list item, drawn with a dot.</td></tr>
+            <tr><td><code>1. item</code></td><td>A numbered list item. The editor counts it on when you press Enter; the number stays part of the text.</td></tr>
+            <tr><td><code>- [ ] task</code></td><td>An unchecked task, clickable in Preview and Split.</td></tr>
+            <tr><td><code>- [x] task</code></td><td>A checked task, struck through and counted in the note's progress badge.</td></tr>
+            <tr><td><code>&gt; quoted</code></td><td>A quote block, drawn with the theme's accent bar.</td></tr>
+            <tr><td><code>```</code> … <code>```</code></td><td>A fenced code block. Everything inside is literal: no formatting, tags or links.</td></tr>
+            <tr><td><code>---</code> or <code>***</code> on its own line</td><td>A horizontal divider in Preview.</td></tr>
+            <tr><td><code>![alt](attachments/pic.png)</code></td><td>A picture. See <a href="#pictures">Pictures</a> for paths, resizing and the <code>{width=…}</code> suffix.</td></tr>
+            <tr><td><code>| a | b |</code> plus a <code>| --- | --- |</code> line</td><td>A table. See <a href="#tables">Tables</a> for alignment and nesting.</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Markers stack</h3>
+        <p>Inline markers nest in any order and come out as one run carrying every style. All of these work:</p>
+        <pre><code>**==bold inside a glow==**
+==**glow then bold**==
+***==triple stack==***
+{color:#4ECDFF}**colored bold**{/color}
+{color:#FF7A90}==red glow=={/color}</code></pre>
+        <p>Headings carry highlights and colours too, so a heading can be emphasised without giving up its size. Code blocks are the exception: inside a fence the markers are just characters.</p>
+
+        <h3>What is not supported</h3>
+        <p>There are no footnotes, no reference-style links and no raw HTML passthrough. A <code>&lt;div&gt;</code> written in a note is shown as the characters you typed. The HTML export turns the same Markdown into HTML, so an exported page needs nothing from the app.</p>
+
+        <div class="docs-callout">
+          <span class="label">TAGS ARE READ FROM THE BODY</span>
+          <p><code>#daily</code> counts as a tag wherever it appears outside a code fence, as long as it starts a word and begins with a letter. That is why the tag list fills itself as you write, without opening the chip field.</p>
+        </div>
+      </section>
+
+      <!-- 07 ------------------------------------------------------------ -->
+      <section class="docs-section" id="formatting">
+        <h2><span class="num">07</span> Formatting bar</h2>
+        <p>The bar under the tags is a row of buttons that act on the selection, or insert at the caret when there is none. Settings → <strong>Show formatting bar</strong> hides it; the shortcuts and the right-click menu keep working.</p>
+
+        <table>
+          <thead><tr><th scope="col">Button</th><th scope="col">What it writes</th></tr></thead>
+          <tbody>
+            <tr><td>H1, H2</td><td><code># </code> and <code>## </code> at the start of the line.</td></tr>
+            <tr><td>Bold, Italic, Underline, Strikethrough</td><td><code>**…**</code>, <code>*…*</code>, <code>__…__</code>, <code>~~…~~</code> around the selection.</td></tr>
+            <tr><td>Inline code</td><td>Backticks around the selection.</td></tr>
+            <tr><td>Bullet list</td><td>Starts the selection (or the caret's line) with <code>- </code>.</td></tr>
+            <tr><td>Task</td><td>Starts the selection (or the caret's line) with <code>- [ ] </code>.</td></tr>
+            <tr><td>Quote</td><td>Starts the selection (or the caret's line) with <code>&gt; </code>.</td></tr>
+            <tr><td>Wiki link</td><td><code>[[…]]</code> around the selected words.</td></tr>
+            <tr><td>Clear formatting</td><td>Removes the markers it understands from the selection, keeping the words.</td></tr>
+            <tr><td>Insert icon</td><td>A searchable Tabler glyph at the caret, as a character inside the note.</td></tr>
+            <tr><td>Picture</td><td>Opens the system picture chooser and writes an attachment line at the caret.</td></tr>
+            <tr><td>Text colour</td><td>A colour picker plus <strong>A Text Color</strong>, which wraps the selection in <code>{color:#RRGGBB}…{/color}</code>.</td></tr>
+            <tr><td>Glow</td><td>A colour picker plus the highlight button, which wraps the selection in <code>==…==</code> (or <code>=={#RRGGBB}…==</code> for a custom colour).</td></tr>
+          </tbody>
+        </table>
+        <p>Markers stack: wrapping an already-formatted selection in another style adds to it, and applying the same style twice removes it again. The tooltip on each button names the shortcut where one exists.</p>
+
+        <h3>Right-click in the editor</h3>
+        <p>The context menu carries the same operations and the ones that do not fit on the bar: bold, italic, underline, strikethrough, inline code, glow highlight with four presets (<em>Amber</em>, <em>Emerald</em>, <em>Cyan</em>, <em>Rose</em>), a custom glow picker, text colour, headings, tasks, quotes, code blocks, a wiki link and clear formatting. Right-clicking with words selected formats those words; right-clicking with no selection inserts the marker at the caret.</p>
+
+        <h3>Glow highlights</h3>
+        <p>A highlight is not a flat background: it carries a soft halo whose strength is the <strong>Glow strength</strong> slider in Settings (0 turns the halo off; 0.6 is the default). The <strong>Default glow color</strong> swatch is what the toolbar button and plain <code>==text==</code> use. A per-highlight colour written as <code>=={#RRGGBB}text==</code> overrides it for that run, and the right-click presets set the default for the next highlight.</p>
+        <p>Text colours are ordinary Markdown, so they survive edits in another editor, exports and a shared note; the app only decides how they look.</p>
+      </section>
+
+      <!-- 08 ------------------------------------------------------------ -->
+      <section class="docs-section" id="pictures">
+        <h2><span class="num">08</span> Pictures</h2>
+        <p>There are three ways in, and they all end the same way: the file is copied into the notes folder's <code>attachments/</code> directory and a picture line is written where the caret was.</p>
+        <ul>
+          <li><strong>The picture button</strong> in the formatting bar opens the system file chooser.</li>
+          <li><strong>Dropping a file</strong> anywhere on the window adds it to the open note.</li>
+          <li><strong>Pasting</strong> with <kbd>Ctrl V</kbd> (a copied screenshot, for example) saves the clipboard image as an attachment.</li>
+        </ul>
+        <p>PNG, JPEG and GIF files are accepted. The note keeps a relative path such as <code>![sunset](attachments/sunset-20261024-101500.png)</code>, which means the folder stays portable: move it, copy it or open the export and the picture still resolves.</p>
+
+        <h3>How pictures are drawn</h3>
+        <p><code>![alt](source)</code> works the way it does on GitHub. The source may be:</p>
+        <ul>
+          <li>a path relative to the note's folder, including spaces (written with <code>%20</code> or inside <code>&lt;…&gt;</code>);</li>
+          <li>an absolute path, or a <code>file://</code> URL;</li>
+          <li>an <code>http(s)</code> URL, which is downloaded in the background and cached while the app runs.</li>
+        </ul>
+        <p>A picture written next to words stays next to them; a picture on its own line gets its own line. In a quote, a picture is drawn inside the quote with the <code>&gt;</code> marker left off. In a table cell it is fitted to the column (see <a href="#tables">Tables</a>).</p>
+
+        <h3>Resizing</h3>
+        <p>In Preview or Split, drag the square handle in a picture's bottom-right corner. The width is written into the note as a <code>{width=320}</code> suffix after the picture, so the size is there the next time the note opens, on another computer, and in a shared note.</p>
+
+        <h3>Pictures in a shared note</h3>
+        <p>When the note lives on a server, the picture is uploaded too, and everybody with the library can see it even after the computer that added it is gone. A picture already in a local note travels with the note when you move it to the shared library, and <strong>Copy to this computer</strong> brings copies of its pictures along. The server accepts pictures up to <strong>12 MB</strong> each; a larger one is refused rather than silently dropped.</p>
+
+        <div class="docs-callout">
+          <span class="label">THE FILE IS THE PICTURE</span>
+          <p>An attachment is an ordinary file in <code>attachments/</code>. Deleting it outside the app leaves the note pointing at nothing, so the picture can no longer be drawn. Backups that copy the folder keep the pictures.</p>
+        </div>
+      </section>
+
+      <!-- 09 ------------------------------------------------------------ -->
+      <section class="docs-section" id="tables">
+        <h2><span class="num">09</span> Tables</h2>
+        <p>A table is a header row, a delimiter row, and any number of body rows:</p>
+        <pre><code>| Feature | Shortcut | Where |
+| :--- | :---: | ---: |
+| Preview | Ctrl+E | Header |
+| Split | Ctrl+Shift+E | Header |
+| Find | Ctrl+F | Above the editor |</code></pre>
+        <p>Both of the first two lines need pipes; that is what tells the parser this is a table rather than a paragraph. The delimiter row also sets each column's alignment: <code>:---</code> left, <code>:---:</code> centre, <code>---:</code> right. A column with no colon is left-aligned.</p>
+
+        <h3>What fits in a cell</h3>
+        <p>Cells are parsed like any other line: bold, italics, underline, strikethrough, inline code, highlights, text colours and <a href="#links">wiki links</a> all work. A short or long row is padded or trimmed to the header's number of columns, so a missing pipe does not break the layout. Pipes inside inline code are still cell separators — escape them by keeping code short or putting the code in a paragraph above the table.</p>
+        <p>Pictures work too. A picture in a cell is fitted to that column's width and can be dragged to resize like any other; the column widens around it rather than the picture spilling over.</p>
+
+        <h3>Tables inside quotes and lists</h3>
+        <p>A table written on quoted lines is drawn inside the quote:</p>
+        <pre><code>&gt; | Name | Value |
+&gt; | --- | --- |
+&gt; | threshold | 12 |</code></pre>
+        <p>Indent a table under a list item and it is drawn inside that item, one step in, in Preview, Split and the exported page. The same applies to a table inside a quote inside a list item.</p>
+
+        <h3>Exporting</h3>
+        <p>The HTML export writes a real <code>&lt;table&gt;</code> with the alignment on the cells and the header row as <code>&lt;th&gt;</code>, so it keeps its shape in any browser. A title underlined with <code>---</code> is still treated as a heading, because a table needs pipes on both of its first two lines.</p>
+      </section>
+
+      <!-- 10 ------------------------------------------------------------ -->
+      <section class="docs-section" id="views">
+        <h2><span class="num">10</span> Views and find</h2>
+        <p>The three view buttons sit in the note header, and the same modes are in the command palette.</p>
+        <table>
+          <thead><tr><th scope="col">Mode</th><th scope="col">What it is</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Edit</strong></td><td>The raw Markdown, with the formatting bar and find available. This is where you type.</td></tr>
+            <tr><td><strong>Split</strong> (<kbd>Ctrl Shift E</kbd>)</td><td>The editor and a live preview side by side. Edits appear in the preview as you type; tasks and wiki links are clickable on the preview side.</td></tr>
+            <tr><td><strong>Preview</strong> (<kbd>Ctrl E</kbd>)</td><td>The note rendered cleanly, with no Markdown markers. Task boxes tick, wiki links open notes, pictures resize.</td></tr>
+          </tbody>
+        </table>
+        <p><strong>Focus mode</strong> (<kbd>Ctrl \</kbd>, or the button in the header) hides the sidebar and leaves the note column in the middle of the window. The same button or shortcut brings the sidebar back.</p>
+
+        <h3>Find in the open note</h3>
+        <p><kbd>Ctrl F</kbd> opens the find bar above the editor. It searches only the note in front of you, case-insensitively, and highlights every match on the page. The count shows where you are (<code>2 / 7</code>); <kbd>Enter</kbd> and the down arrow go to the next match, <kbd>Shift Enter</kbd> and the up arrow to the previous one, and <kbd>Esc</kbd> closes the bar. Moving to a match scrolls it into view.</p>
+
+        <h3>Search the whole vault</h3>
+        <p><kbd>Ctrl Shift F</kbd> puts the caret in the sidebar search, and the field filters as you type. A query is split into words, and every word has to match somewhere:</p>
+        <ul>
+          <li>a plain word matches a title (including a fuzzy subsequence), the body, or a tag;</li>
+          <li>a word starting with <code>#</code> matches only tags, and only ones containing that text;</li>
+          <li>an empty field shows everything, still narrowed by the active tag filter and section.</li>
+        </ul>
+        <p>Results are ranked with a title match weighing far more than body matches, so the note you meant is usually at the top. Press <kbd>Esc</kbd> to clear the search, the tag filter and the section and return to All Notes; the little × in the field clears just the text.</p>
+
+        <h3>Ticking tasks</h3>
+        <p>In Preview and Split, click a task box. The note's Markdown is updated (<code>- [ ]</code> becomes <code>- [x]</code> and back), the line is struck through when done, and the progress badge on the note card and in the header changes with it. In Edit mode the box is just text.</p>
+      </section>
+
+      <!-- 11 ------------------------------------------------------------ -->
+      <section class="docs-section" id="links">
+        <h2><span class="num">11</span> Wiki links, backlinks and the graph</h2>
+        <p>Write <code>[[Another Note]]</code> anywhere in a body to point at that note. Write <code>[[Another Note|read this instead]]</code> when the sentence needs different words from the title. Matching is case-insensitive and prefers the note's title; a link to a title that does not exist yet is still drawn as a link, and clicking it creates the note.</p>
+
+        <h3>Following a link</h3>
+        <p>In Preview or Split, click a wiki link. If the note exists it opens; if it does not, EloraNotes creates it with the body <em>Linked from another note.</em> plus the <code>#linked</code> tag, and opens it ready to write. The link target is the note's title, so renaming either note can break a link — the broken-link report below is how you find those.</p>
+
+        <h3>Backlinks</h3>
+        <p>The <strong>Linked from</strong> footer under the editor lists every note whose body contains a link to this one. Click a title there to jump to the note that mentions it. Backlinks are computed from the notes currently loaded, so they update as you write.</p>
+
+        <h3>The note graph</h3>
+        <p><strong>Show Note Graph</strong> in the command palette opens a window with every live note on a ring, one dot per note and one line per wiki link. Hover a dot to highlight it, and click it to open that note. Trashed notes are not in the graph. It is a map of what links to what, not a second editor.</p>
+
+        <h3>Links that lead nowhere</h3>
+        <p><strong>Show Links That Lead Nowhere</strong> lists every wiki-link target with no note behind it, together with the notes where it was found. Click a target to create that note and open it, which is the fix for most of them. The same report is the quickest way to find a link broken by a rename.</p>
+
+        <h3>Links in exports</h3>
+        <p>An <a href="#export">HTML export</a> rewrites wiki links to the exported pages. A single-note export brings the notes it links to and the notes that link to it, so its links open real pages; a link to a note outside the export stays the words it was written with rather than becoming a dead link.</p>
+      </section>
+
+      <!-- 12 ------------------------------------------------------------ -->
+      <section class="docs-section" id="folders">
+        <h2><span class="num">12</span> Folders</h2>
+        <p>Folders group the sidebar without moving files: a folder is the <code>folder:</code> value in a note's frontmatter, so every note stays in the same flat directory on disk. That keeps paths, pictures and backups simple while the list still reads like a tree.</p>
+
+        <h3>Filing a note</h3>
+        <p>Open the folder menu in the note header (it shows <strong>No folder</strong> until you pick one). The menu lists every existing folder, a <strong>New folder…</strong> field with an <strong>Add</strong> button, and <strong>No folder</strong> to take the note out. A new note created while a note inside a folder is open joins that folder automatically.</p>
+
+        <h3>How folders look</h3>
+        <ul>
+          <li>Folders are listed alphabetically, each with its note count.</li>
+          <li>Their notes sit one step in from the header, so it is obvious what belongs to what.</li>
+          <li>Click a folder header to fold it shut; click again to open it. The folded state is remembered between launches.</li>
+          <li>While a search or tag filter is active, folders open themselves so matches are not hidden inside a folded one.</li>
+          <li>Unfiled notes appear under <strong>All Notes</strong>; pinned notes appear above everything, whatever folder they are in.</li>
+        </ul>
+
+        <h3>Folders in a shared library</h3>
+        <p>A shared library has folders of its own. The library itself is marked with a cloud rather than a folder, and its folders sit one step in from it, with their notes one step further in again — deeper than a local folder, so a server folder is never mistaken for one on this computer. Everyone with the library sees the same folders and the same notes in them.</p>
+      </section>
+
+      <!-- 13 ------------------------------------------------------------ -->
+      <section class="docs-section" id="tags">
+        <h2><span class="num">13</span> Tags, search and sort</h2>
+        <p>A tag can be written in the body as <code>#project</code>, or added with the tag chips under the title. Both kinds are equal: the chip row shows the tags the note has, and the body keeps its own words. Typing a tag into the chip field and pressing Enter adds it; the × on a chip removes it from the note (an inline tag can only be removed from the text).</p>
+        <p>Tags are normalised to lowercase, and a leading <code>#</code> is optional when you type one. Tags may contain letters, digits, <code>-</code>, <code>_</code> and <code>/</code>, which allows names like <code>#project/elora</code>. A code fence is ignored, so example tags in code do not pollute the list.</p>
+
+        <h3>The filter menu</h3>
+        <p><strong>Filter</strong> in the sidebar lists every tag with the number of notes carrying it, in one scrollable menu. Pick one to narrow the list to that tag; pick it again, or choose <strong>All notes</strong>, to clear the filter. The button shows the active tag in the accent colour. Filters apply inside the current section, so a tag filter and Pinned work together.</p>
+
+        <h3>Sorting</h3>
+        <p>The arrows button beside the filter chooses the order for each group of notes:</p>
+        <ul>
+          <li><strong>Last edited</strong> — the default, most recent first.</li>
+          <li><strong>Created</strong> — newest note first.</li>
+          <li><strong>Title</strong> — alphabetical, case-insensitive.</li>
+        </ul>
+        <p>The order applies within pinned, inside each folder, inside the shared library and its folders, and to unfiled notes. The folders themselves stay alphabetical, and pinned notes stay above everything. The choice is saved with the rest of the settings.</p>
+      </section>
+
+      <!-- 14 ------------------------------------------------------------ -->
+      <section class="docs-section" id="cards">
+        <h2><span class="num">14</span> Pin, cards and trash</h2>
+        <h3>Pinning</h3>
+        <p><kbd>Ctrl P</kbd>, the pin button in the header, or <strong>Pin / Unpin Current Note</strong> in the palette pins a note. Pinned notes get their own section at the top of the sidebar, painted in the theme's pin colour, and stay in that section whatever folder they are in. Unpinning puts the note back where its folder and date say it belongs.</p>
+
+        <h3>Note cards</h3>
+        <p>The sidebar has two card styles. The default is a compact one-line row: a small icon and the title, so about twice as many notes fit in the list. Hovering a row shows when it was last edited and its tags.</p>
+        <p>Settings → <strong>Tall note cards</strong> brings back the taller card, with a date and a tag row. On those cards, Settings → <strong>Show a preview line on note cards</strong> adds the first lines of the note; it is off by default and has no effect on the compact rows, which have no room for it.</p>
+        <p>Both styles show a note's own Tabler icon, and — on a shared note somebody else has open — a small brush in each person's colour, which names them on hover. A tall card also carries the date, its tags and a task progress badge such as <code>2/3</code>. Clicking anywhere on a card opens the note; the title is part of the card, so clicking it does not select the text instead.</p>
+
+        <h3>Trash</h3>
+        <p>The trash button in the header asks for confirmation in place (<strong>Move to Trash</strong> / <strong>Cancel</strong>), then marks the note trashed. Its file stays in the notes folder with <code>trashed: true</code>; it leaves the count, the graph and exports, and appears under <strong>Trash</strong> in the sidebar.</p>
+        <p>Open a trashed note and the header offers <strong>Restore</strong> and <strong>Delete Forever</strong>. Restoring puts the note back as it was, folder and tags included; deleting forever removes the file from disk. Nothing is purged on a timer, so the Trash keeps its contents until you decide.</p>
+      </section>
+
+      <!-- 15 ------------------------------------------------------------ -->
+      <section class="docs-section" id="daily">
+        <h2><span class="num">15</span> Daily notes and templates</h2>
+        <p><kbd>Ctrl D</kbd>, the calendar button in the footer, or <strong>Open Today's Daily Note</strong> opens the note titled <code>Daily Note — YYYY-MM-DD</code>. If today's note exists it is opened; otherwise it is created from the daily template. Running it twice in one day never makes a duplicate.</p>
+        <p>The daily template starts you with morning intention tasks, a captures section, an end-of-day reflection, and the tags <code>#daily</code> and <code>#journal</code>:</p>
+        <pre><code>## Friday, Oct 24 · Morning Intention
+- [ ] Primary focus for today
+- [ ] Secondary task
+
+## Notes &amp; Captures
+-
+
+## End of Day Reflection
+&gt; What went well today?
+
+#daily #journal</code></pre>
+
+        <h3>Templates</h3>
+        <p>Two more templates live in the command palette. <strong>New Note from Template: Meeting Notes</strong> creates a note titled with today's date and sections for attendees, agenda and action items, tagged <code>#meeting</code> and <code>#notes</code>. <strong>Project Spec</strong> creates a note with overview, goals, and an architecture section that links to <code>[[Welcome to EloraNotes]]</code>, tagged <code>#project</code> and <code>#spec</code>.</p>
+        <p>Templates are just starting points. Once the note exists it is an ordinary note; edit or delete any part of it.</p>
+        <p>While a shared note is open, daily notes, templates and links that create a note all create it in the shared library instead of on your disk, so a team's daily note lands where the team can see it.</p>
+      </section>
+
+      <!-- 16 ------------------------------------------------------------ -->
+      <section class="docs-section" id="palette">
+        <h2><span class="num">16</span> Command palette</h2>
+        <p><kbd>Ctrl K</kbd> (or <kbd>Ctrl Shift P</kbd>, or the command button in the sidebar footer) opens one field that does two jobs: jump to a note, or run a command. Start typing and it filters both by fuzzy match on the words, not just a prefix.</p>
+        <ul>
+          <li><kbd>↑</kbd> / <kbd>↓</kbd> move through the results, <kbd>Enter</kbd> runs the highlighted one, <kbd>Esc</kbd> closes the palette.</li>
+          <li>Notes are listed by title; choosing one opens it, even if it is in a folder you have folded shut.</li>
+          <li>Commands are labelled with the shortcut where one exists, so the palette doubles as a shortcut reminder.</li>
+        </ul>
+
+        <table>
+          <thead><tr><th scope="col">Command</th><th scope="col">Does</th></tr></thead>
+          <tbody>
+            <tr><td>New Blank Note</td><td>Same as <kbd>Ctrl N</kbd>.</td></tr>
+            <tr><td>Open Today's Daily Note</td><td>Opens or creates today's journal note.</td></tr>
+            <tr><td>New Note from Template: Meeting Notes / Project Spec</td><td>Creates a filled note from a template.</td></tr>
+            <tr><td>View: Markdown Editor / Split / Clean Preview</td><td>Switches the view mode.</td></tr>
+            <tr><td>Toggle Distraction-Free Focus Mode</td><td>Hides or shows the sidebar.</td></tr>
+            <tr><td>Pin / Unpin Current Note</td><td>Moves the note into or out of Pinned.</td></tr>
+            <tr><td>Copy Current Note Markdown to Clipboard</td><td>Copies title and body as Markdown.</td></tr>
+            <tr><td>Export Current Note as HTML</td><td>Starts a <a href="#export">single-note export</a>, with its linked notes.</td></tr>
+            <tr><td>Export All Notes as HTML</td><td>Starts a whole-vault export.</td></tr>
+            <tr><td>Import Markdown From Import Folder</td><td>Copies <code>.md</code> files from <code>Import/</code> into the notes folder.</td></tr>
+            <tr><td>Show Links That Lead Nowhere</td><td>Lists wiki links with no target note.</td></tr>
+            <tr><td>Show Note Graph</td><td>Opens the graph window.</td></tr>
+            <tr><td>Toggle Formatting Toolbar</td><td>Shows or hides the formatting bar.</td></tr>
+            <tr><td>Theme: …</td><td>Seven entries, one per theme, applied immediately.</td></tr>
+            <tr><td>Open Trash Folder</td><td>Switches the sidebar to the Trash section.</td></tr>
           </tbody>
         </table>
       </section>
 
+      <!-- 17 ------------------------------------------------------------ -->
+      <section class="docs-section" id="export">
+        <h2><span class="num">17</span> Export and import</h2>
+        <h3>Exporting to HTML</h3>
+        <p><strong>Export Current Note as HTML</strong> and <strong>Export All Notes as HTML</strong> are in the command palette. Neither writes anything immediately: a dialog first says exactly what would happen — how many pages and pictures it would write, whether it is the note and its linked notes or the whole vault, and the folder — and only the <strong>Export</strong> button writes. <strong>Cancel</strong> writes nothing.</p>
+        <ul>
+          <li><strong>Where:</strong> Downloads by default; a whole-vault export goes into an <code>EloraNotes Export</code> folder there. <strong>Choose…</strong> picks another folder, and the choice is remembered for the next export.</li>
+          <li><strong>Pages:</strong> one standalone HTML file per note, with the note's title as the heading and a small built-in stylesheet, so it reads in any browser without the app.</li>
+          <li><strong>Pictures:</strong> copied into a <code>pictures</code> folder beside the pages and written as real <code>&lt;img&gt;</code> elements. A picture that lives on the web is loaded from where it lives; one that cannot be found stays the words it was written with instead of becoming a broken image.</li>
+          <li><strong>Wiki links:</strong> rewritten as links to the other exported pages. A link to a note outside the export stays plain text, so there are no dead ends.</li>
+          <li><strong>Single-note exports close over links:</strong> exporting one note also writes the notes it links to <em>and</em> the notes that link to it, so its links work from either direction. If it links to nothing and nothing links to it, the export is just that page.</li>
+          <li><strong>Tables, tasks and formatting</strong> are exported as HTML: real <code>&lt;table&gt;</code> elements with alignment, disabled checkboxes for tasks, and the inline styles the preview shows.</li>
+        </ul>
+        <p>An export is a snapshot, not a sync folder. Editing an exported page does not change the note, and exporting again overwrites the pages it writes.</p>
+
+        <h3>Importing Markdown</h3>
+        <p>Put <code>.md</code> files directly inside an <code>Import</code> folder in your notes folder, then run <strong>Import Markdown From Import Folder</strong>. Each file becomes a new note: its frontmatter is kept (title, folder, tags, pin, icon and timestamps where present), its body is kept, and it gets a fresh file name so an existing note is never overwritten. The palette reports how many notes were imported; importing the same files twice creates duplicates.</p>
+        <p>The import is one level deep — files directly in <code>Import/</code>. Subfolders are left alone. After importing, the originals remain in <code>Import/</code>; delete them yourself once you are happy.</p>
+      </section>
+
+      <!-- 18 ------------------------------------------------------------ -->
+      <section class="docs-section" id="sharing">
+        <h2><span class="num">18</span> Shared notes</h2>
+        <p>Shared notes are optional. One machine runs <code>elora-server</code>, which holds a library of ordinary <code>.md</code> files; the app connects to it over TLS and shows that library in the sidebar as a group titled with the server's name and marked with a cloud. There is no cloud account in between: the client talks straight to your server.</p>
+
+        <h3>Connecting</h3>
+        <p>Server setup is in <a href="#server">Hosting a server</a>. In the app, open <strong>Settings → Shared library</strong> and fill in:</p>
+        <ul>
+          <li><strong>Address</strong> — an IP or a DNS name. It also accepts <code>host:port</code> if you would rather type the port there.</li>
+          <li><strong>Port</strong> — <code>7331</code> unless the server was installed on another one.</li>
+          <li><strong>Password</strong> — the one the installer asked for. It is sent inside the TLS connection, never in the clear.</li>
+        </ul>
+        <p>Press <strong>Connect</strong>. On the first connection the server presents a self-signed certificate and the app shows a short code; it must match the code the installer printed. Accept it once and the key is remembered: a different certificate on a later connection is refused. If the server legitimately gets a new certificate, <strong>Forget this server's key</strong> makes the app ask again next time. The state line under the heading says <em>Not connected</em>, <em>Connecting…</em> or <em>Connected to &lt;server&gt; as &lt;you&gt;</em>; a failure is explained under it instead of only flashing by in a notice.</p>
+
+        <h3>Putting notes in the library</h3>
+        <p>With a server connected, the note header's folder menu grows a <strong>Shared libraries</strong> section naming the server. Picking it moves the note there: its body, folder, tags, pin and icon arrive on the server, and the local file goes away once the server has it. The other direction is <strong>Copy to this computer</strong> in the same menu on a shared note, which keeps the shared note where it is and writes a local copy.</p>
+        <p>While a shared note is open, <strong>New</strong> creates the next note directly on the server, in the same folder and with the tag you are filtering by. Daily notes, templates and wiki links that create a note do the same. The new note appears on everybody's sidebar straight away.</p>
+        <p>Pictures added to a shared note are uploaded to the server and kept beside its notes, so everyone sees them and they survive the computer that added them. A picture already in a note travels with it when the note is moved in, and copying the note out brings copies of its pictures.</p>
+
+        <h3>Editing together</h3>
+        <p>Everyone who opens the same note sees each other's edits as they are typed. A coloured caret with the person's name marks where they are, their name is listed in the <em>Editing with</em> row above the editor, and their note card shows a brush in their colour while they have it open. Colours come from the <a href="#identity">colour each person chose</a>, so the same person keeps the same colour.</p>
+        <p>The merge is a proper shared document, not last-writer-wins. A keystroke made against a frame that has not yet drawn somebody else's new words is placed on the text it was actually made on, so the other person's words stay. The caret is sent at a short interval and the held-back last position is sent as soon as it may be, so a name tag does not sit a few characters behind fast typing. If two people replace exactly the same characters at the same instant, the other person's words are kept and your replacement goes in beside them; a second backspace fixes it rather than your typing being silently eaten.</p>
+        <p>The connection looks after itself. While a note is open the client pings the server every 20 seconds, so a quiet note is not mistaken for an abandoned connection and dropped for everybody at once, and a link that has genuinely died (a laptop that slept, a router that forgot the mapping) is noticed within about a minute and reconnected. After a reconnect the room's text is restored; anything typed <em>during</em> the gap is replaced by the room's text.</p>
+
+        <h3>What syncs</h3>
+        <ul>
+          <li><strong>Synced:</strong> note bodies, titles, folders, tags, pins, the trash state, and pictures in shared notes.</li>
+          <li><strong>Local:</strong> themes, text size, colour overrides, card style, window size and position, the update check, and your local-only notes.</li>
+          <li><strong>Not synced:</strong> anything outside the library. A note stays on your computer unless you move it into the shared library.</li>
+        </ul>
+
+        <div class="docs-callout">
+          <span class="label">SAME PROTOCOL ON BOTH SIDES</span>
+          <p>Everybody in the library, including the server, needs a build that speaks the same protocol — 0.9.21 or newer. A client that can share pictures or enforce key-based privacy refuses an older server and says which side to update, rather than quietly leaving pictures out or trusting names.</p>
+        </div>
+      </section>
+
+      <!-- 19 ------------------------------------------------------------ -->
+      <section class="docs-section" id="identity">
+        <h2><span class="num">19</span> Name, identifier and key</h2>
+        <p>On a shared library you go by two things, both in <strong>Settings → Shared library</strong>. They do different jobs, and keeping them separate is what stops somebody from becoming you by typing your name.</p>
+
+        <h3>Your name</h3>
+        <p>The name is public. It is what others see next to your caret and in the share panel, and what they type to put you on a note. A fresh install suggests your account name with four random hex characters (<code>noxilith-4f2a</code>); you can replace it with any word. The first person to use a name on a server keeps it: the server refuses a name that is already claimed at the handshake, so two people cannot both be “Skorp”.</p>
+
+        <h3>Your identifier</h3>
+        <p>The identifier is the secret behind the name: 32 random hex characters generated once on this computer. Only the server ever reads it, to check that the connection really is the person the name belongs to. It is never sent to other clients, never written into a note, and the server keeps only its hash. Treat it like a password.</p>
+        <p>There is deliberately no “make a new identifier” button, because the server binds a name to the key that claimed it: a fresh secret would be a stranger, locked out of the name and out of every note restricted to the old key. If the identifier leaks, close the app, clear the identifier from <code>.elora-settings.json</code> (or delete the file), and the next launch generates a new one. Have the server operator free the old name first (<a href="#admin">people release</a>). Notes that recorded the old key stay closed to the new one.</p>
+
+        <h3>Your key</h3>
+        <p>The identifier is turned into a public key, <code>SHA-256(identifier)</code>, written as 64 hex characters. A note records the key — <code>owner_key</code> for its owner, <code>shared_keys</code> for its guests — never the identifier. The key cannot be turned back into the secret, which is why it is safe to show and copy. The short form beside <strong>Your key</strong> is a readable fingerprint of the full 64 characters, and the <strong>Copy</strong> button copies the whole value for the server operator when <a href="#admin">older notes have to be adopted</a>.</p>
+
+        <h3>Changing your name changes nothing</h3>
+        <p>Noxilith who becomes Skorp is still the key behind Noxilith. The notes they own, the notes only they can see and the notes other people shared with them keep reaching them. Connecting as Skorp does not open Skorp's notes, because those belong to a different key — and a name taken from somebody reaches nothing of theirs. That is the point of the split: the name is a label, the key decides.</p>
+
+        <h3>The same person on another computer</h3>
+        <p>Press <strong>Copy</strong> beside the identifier here and paste it into the same box on the other computer. You arrive as the same person, with the same notes and restrictions. The display name is a separate field, so type the same one there if you want to go by the same label; the key is what decides access either way. Changes to the name or identifier restart the connection so the server can re-evaluate what it shows you.</p>
+
+        <h3>Your colour</h3>
+        <p><strong>Your colour</strong> is the colour other people see your name and caret in while a note is shared. Pick any colour, or press <strong>Automatic</strong> to go back to the one derived from your name. It only changes what other people see; nothing in your own window changes. A colour picked while a note is open reaches the people already in it, and is remembered for the next connection.</p>
+      </section>
+
+      <!-- 20 ------------------------------------------------------------ -->
+      <section class="docs-section" id="privacy">
+        <h2><span class="num">20</span> Who can see a note</h2>
+        <p>A note made in the shared library is open to everybody on that server. The lock button in its header opens <strong>Who can see this note</strong>:</p>
+        <ul>
+          <li><strong>Everyone on &lt;server&gt;</strong> — the whole library, which is where a new note starts.</li>
+          <li><strong>Only me</strong> — nobody else's sidebar lists it and nobody else can open it. Anyone reading it when it is closed is taken out of it, so nothing typed afterwards reaches them.</li>
+          <li><strong>Only these people</strong> — the same, plus the people named on the note. Type the name as it appears next to their caret (<em>Their name, e.g. Goku</em>) and press Add. The server knows which key owns that name, so the note reaches that person and not whoever else types the same word. A name nobody on the server has claimed is refused with “nobody on this server is called that” rather than quietly written down for whoever picks it up later. Remove a person's chip to take the note away again.</li>
+        </ul>
+        <p>Only the note's owner changes this. Everybody else sees whose note it is and that it was shared with them; the controls are disabled. Ownership is recorded on every note the library creates, in its frontmatter (<code>owner_key:</code>, <code>private:</code>, <code>shared_keys:</code>), which the server keeps in the <code>.md</code> file, so a restriction survives a restart and stays visible to anyone who edits the folder by hand.</p>
+
+        <h3>How the decision is made</h3>
+        <p>What decides entry is a key, never a name. The server computes <code>SHA-256(identifier)</code> from the identifier a connection brings and compares it with <code>owner_key</code> and <code>shared_keys</code>. Names in the note are labels for the sidebar and the share panel. So one identifier on two computers is one person, and no other identifier is — changing a display name cannot move a note to a different person.</p>
+        <p>A restricted note with no key on it was locked before keys existed. It is handed to nobody over the network, because a name proves nothing. The server operator gives it a key once with <a href="#admin"><code>elora-server people adopt --write</code></a>, after checking the name list.</p>
+
+        <div class="docs-callout is-warn">
+          <span class="label">WHAT THE LOCK DOES AND DOES NOT DO</span>
+          <p>The server password still decides who may connect at all, and whoever runs the server can read its files. There is no end-to-end encryption: the server holds the notes in the clear so it can serve them. Treat the lock as <em>which notes this server hands out, to which identity</em>, for a household or group who trust each other with the password — and keep your identifier as private as the password.</p>
+        </div>
+      </section>
+
+      <!-- 21 ------------------------------------------------------------ -->
+      <section class="docs-section" id="server">
+        <h2><span class="num">21</span> Hosting a server</h2>
+        <p>The server is a small binary with no GUI libraries, so it runs on a headless machine. Every release ships it with an installer for Linux and Windows.</p>
+        <table>
+          <thead><tr><th scope="col">File</th><th scope="col">What it is</th></tr></thead>
+          <tbody>
+            <tr><td><code>elora-server-linux-x86_64</code></td><td>The Linux server binary.</td></tr>
+            <tr><td><code>install-elora-server.sh</code></td><td>The Linux installer.</td></tr>
+            <tr><td><code>elora-server-windows-x86_64.exe</code></td><td>The Windows server binary.</td></tr>
+            <tr><td><code>install-elora-server.ps1</code></td><td>The Windows installer.</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Linux</h3>
+        <pre><code>chmod +x install-elora-server.sh
+sudo ./install-elora-server.sh</code></pre>
+        <p>The installer asks for the name people see in their sidebar, the port, and the password everyone connects with. It installs the binary to <code>/usr/local/bin/elora-server</code> (or <code>/opt/elora-server/elora-server</code> when <code>/usr/local</code> is not writable), creates the notes folder, generates a self-signed certificate, registers a systemd service that starts at boot, and opens the port in <code>ufw</code> or <code>firewalld</code> when one of those is in charge. It finishes by printing the addresses to hand out and the short certificate code the first client will ask you to confirm.</p>
+        <p>On an immutable system such as NixOS, where <code>/etc/systemd/system</code> is read-only, the installer registers a service for your own account instead: the notes move to <code>~/.local/share/elora-server</code>, lingering is switched on so it still starts at boot, and the summary prints the <code>systemctl --user</code> commands. Set <code>ELORA_SERVICE_MODE=system</code> or <code>ELORA_SERVICE_MODE=user</code> to force one. A certificate left by an interrupted install is carried over, so the code clients already trust does not change.</p>
+
+        <h3>Windows</h3>
+        <p>Open PowerShell as Administrator and run:</p>
+        <pre><code>powershell -ExecutionPolicy Bypass -File .\install-elora-server.ps1</code></pre>
+        <p>It asks the same questions, installs the binary, creates the notes folder and certificate, registers the startup task <strong>EloraNotes Server</strong>, and opens the port in Windows Firewall. Run it from an elevated shell so the task and the firewall rule can be created.</p>
+
+        <h3>Where the server keeps things</h3>
+        <table>
+          <thead><tr><th scope="col">Install</th><th scope="col">Data folder</th><th scope="col">Notes</th></tr></thead>
+          <tbody>
+            <tr><td>Linux, system service</td><td><code>/var/lib/elora-server</code></td><td><code>/var/lib/elora-server/notes</code></td></tr>
+            <tr><td>Linux, per-user service</td><td><code>~/.local/share/elora-server</code></td><td><code>…/notes</code></td></tr>
+            <tr><td>Windows</td><td><code>C:\ProgramData\EloraNotes Server</code></td><td><code>…\notes</code></td></tr>
+          </tbody>
+        </table>
+        <p>The data folder holds <code>config.json</code> (name, port, bind address, the password, and the notes path — it is plain JSON, so protect the folder as you would the password), <code>cert.pem</code> and <code>key.pem</code>, <code>people.json</code> (which name belongs to which key), and the notes folder. The notes folder is an ordinary EloraNotes library with <code>attachments/</code> inside it, so copying or backing it up keeps everything.</p>
+        <p>The server listens on all interfaces by default (<code>bind: "0.0.0.0"</code>) on port <code>7331</code>. Editing a note's file by hand works — the server re-reads a note's body when it is next opened — but an open note is held in memory, so edit between sessions rather than under a live one.</p>
+
+        <h3>Updating, uninstalling and reinstalling</h3>
+        <p>Running the installer again on a machine that already has a server is an update, not a second install. It prints what it found (service, binary, settings, how many notes, the certificate code) and asks whether to <strong>update</strong> it, <strong>uninstall</strong> it and keep the notes, <strong>uninstall</strong> it and delete the notes and certificate, or <strong>cancel</strong>. Updating keeps the notes and the certificate, so the code clients trust does not change.</p>
+        <p>For scripted installs, <code>ELORA_ACTION=update</code>, <code>uninstall</code> or <code>purge</code> skips the question (on Windows, set <code>$env:ELORA_ACTION</code> first). With no answer to the prompt, an existing install is updated.</p>
+
+        <h3>Reaching it from another network</h3>
+        <p>On the same LAN, use the machine's local address (<code>192.168.1.20</code>) and the port. From outside, forward that TCP port on the router once and give people the public IP or a DNS name; give the server machine a fixed LAN address so the rule keeps pointing at it. If the WAN address the router reports differs from <code>curl -4 ifconfig.me</code>, the connection is behind carrier-grade NAT and no port forward can work — put both machines on a VPN such as Tailscale and use the server's address there.</p>
+        <p>A DNS name works anywhere an IP does, and the client's address field accepts <code>address:port</code>.</p>
+      </section>
+
+      <!-- 22 ------------------------------------------------------------ -->
+      <section class="docs-section" id="admin">
+        <h2><span class="num">22</span> Server upkeep</h2>
+        <h3>Keeping it running</h3>
+        <pre><code># Linux
+systemctl status elora-server
+journalctl -u elora-server -f
+sudo systemctl restart elora-server
+
+# Linux, per-user install
+systemctl --user status elora-server
+journalctl --user -u elora-server -f
+
+# Windows
+Start-ScheduledTask -TaskName "EloraNotes Server"
+Stop-ScheduledTask  -TaskName "EloraNotes Server"</code></pre>
+        <p><strong>Keep the app and the server on the same release.</strong> The library needs both sides to speak the same protocol, so a release that changes it leaves the older side refused until it is updated — and server-side fixes only arrive when the server is. Download the new <code>elora-server</code> from the release, re-run the installer (or replace the binary) and restart the service.</p>
+
+        <h3>Who is who</h3>
+        <p><code>elora-server people</code> manages the name list — which display name is bound to which public key. Running <code>elora-server people</code> or <code>elora-server people list</code> prints every claimed name with its key. The short form beside <strong>Your key</strong> in Settings is yours.</p>
+        <pre><code>elora-server people list
+elora-server people adopt            # dry run: what would change, and for whom
+elora-server people adopt --write    # apply it
+elora-server people release Skorp    # free a name claimed by the wrong person</code></pre>
+        <p><strong>adopt</strong> is for notes locked before keys existed. It takes each restricted note's owner name, looks it up in the list, and writes the key behind it into the note; guests named on the note get their keys too. A name nobody has claimed cannot be turned into a key — have that person connect once, then run it again. <strong>release</strong> frees a name that was claimed by the wrong key; the next connection with that name claims it, so let that be its owner. Notes that already carry a key need nothing: their <code>owner:</code> line is only the label the sidebar prints.</p>
+
+        <div class="docs-callout is-warn">
+          <span class="label">STOP THE SERVICE BEFORE WRITING</span>
+          <p>A running server keeps its own copy of the library and the name list in memory and saves it again on the next connection or edit, which would undo a <code>release</code> or <code>adopt --write</code>. Stop the service for the minute it takes, run the command as the service user with the same data folder the unit names, then start it again.</p>
+        </div>
+
+        <pre><code># What this machine's service really uses (User=, Environment=, ExecStart=)
+systemctl cat elora-server | grep -E '^(User|Environment|ExecStart)'
+
+sudo systemctl stop elora-server
+sudo -u elora env ELORA_SERVER_DIR=/var/lib/elora-server elora-server people list
+sudo -u elora env ELORA_SERVER_DIR=/var/lib/elora-server elora-server people release Skorp
+sudo systemctl start elora-server</code></pre>
+        <p><code>elora</code> and <code>/var/lib/elora-server</code> are the installer's defaults; the <code>systemctl cat</code> line prints the ones this machine really uses. A per-user install is <code>systemctl --user</code>, with <code>~/.local/share/elora-server</code> and no <code>sudo</code>.</p>
+        <p>Run it <strong>as the service user, not root</strong>. <code>sudo ELORA_SERVER_DIR=… elora-server …</code> does not work — <code>sudo</code> reads <code>VAR=value</code> as the command name — and root would leave <code>people.json</code> owned by root, so the service could no longer save a name claimed afterwards. <code>sudo -u elora env …</code> sets it without changing the owner. After a release, <code>people list</code> shows the name free rather than gone: the next person to connect with it claims it.</p>
+
+        <h3>Checking the build and the certificate</h3>
+        <pre><code>elora-server version
+elora-server show          # the saved settings and the addresses to hand out
+elora-server fingerprint   # the short code clients confirm, and the full fingerprint</code></pre>
+        <p>If clients ask to confirm a new code after an update, the certificate changed and each client needs to accept it once (or use <strong>Forget this server's key</strong> first, then connect). Keeping the data folder intact during an update keeps the certificate, and therefore the code, the same.</p>
+      </section>
+
+      <!-- 23 ------------------------------------------------------------ -->
+      <section class="docs-section" id="connect-trouble">
+        <h2><span class="num">23</span> Stuck on Connecting…</h2>
+        <p>A wrong password or an outdated client says so by itself. Being stuck at <em>Connecting…</em> means the connection never got through; the app gives up on an address after a few seconds and shows the reason under the state line. The usual causes, in the order worth checking:</p>
+        <ul>
+          <li><strong>The server is not running.</strong> On the server machine: <code>systemctl status elora-server</code>, then <code>journalctl -u elora-server -n 30 --no-pager</code>.</li>
+          <li><strong>It is listening on the wrong address.</strong> <code>ss -ltn | grep 7331</code> should show <code>0.0.0.0:7331</code> or <code>[::]:7331</code>. <code>127.0.0.1:7331</code> means only that machine can reach it: set <code>bind</code> to <code>0.0.0.0</code> in the server's <code>config.json</code> and restart it.</li>
+          <li><strong>A firewall drops the port.</strong> The installer opens it in <code>ufw</code> or <code>firewalld</code>; check <code>sudo ufw status</code> if you use another firewall, and check Windows Firewall on a Windows server.</li>
+          <li><strong>The router does not forward it.</strong> Forward TCP 7331 to the server machine's LAN address, and give that machine a fixed address so the rule keeps pointing at it.</li>
+          <li><strong>You are behind carrier-grade NAT.</strong> If the router's WAN address differs from <code>curl -4 ifconfig.me</code>, no port forward can work; use a VPN such as Tailscale and the server's address there.</li>
+          <li><strong>The public IP does not work from inside your own network.</strong> Many routers cannot loop back to their WAN address; test from a phone on mobile data before assuming the port is closed.</li>
+          <li><strong>The certificate code does not match.</strong> If the app refuses the server's key, you are talking to something else (or the server was reinstalled). Stop and check the code on the server with <code>elora-server fingerprint</code>; only then forget the old key and accept the new one.</li>
+        </ul>
+        <p>A DNS name works anywhere an IP does. If the address field holds <code>host:port</code>, leave the port field matching it or clear the port from the address; both forms are accepted, and the explicit port in the address wins.</p>
+      </section>
+
+      <!-- 24 ------------------------------------------------------------ -->
+      <section class="docs-section" id="settings">
+        <h2><span class="num">24</span> Settings</h2>
+        <p>Settings opens from the footer gear or <kbd>Ctrl ,</kbd>. The window scrolls, because it also carries the notes path, the shortcut reference and the library controls. Every change applies immediately and is saved to <code>.elora-settings.json</code>.</p>
+        <table>
+          <thead><tr><th scope="col">Setting</th><th scope="col">What it does</th><th scope="col">Default</th></tr></thead>
+          <tbody>
+            <tr><td>Theme</td><td>Seven palettes: Obsidian, Paper, Nordic, Matcha, Sepia, Midnight, Matugen. See <a href="#themes">Themes</a>.</td><td>Obsidian</td></tr>
+            <tr><td>Text size</td><td>Scales the editor and interface from 11 to 22.</td><td>15</td></tr>
+            <tr><td>Colors</td><td>Per-part overrides — Background, Sidebar, Text, Accent, Pin, Muted text, Borders, Danger. Tick a swatch to override the theme, or <strong>Reset colors to theme</strong>.</td><td>Theme's colours</td></tr>
+            <tr><td>Glow strength</td><td>Halo around highlights, from 0 (flat) to 1 (strong).</td><td>0.6</td></tr>
+            <tr><td>Default glow color</td><td>The colour the highlight button and plain <code>==text==</code> use.</td><td>Amber <code>#FFC44D</code></td></tr>
+            <tr><td>Show formatting bar</td><td>Hides the formatting row above the editor. Shortcuts and right-click still work.</td><td>On</td></tr>
+            <tr><td>Tall note cards</td><td>The taller card with a date and tag row. Off is the one-line list that fits about twice as many notes.</td><td>Off</td></tr>
+            <tr><td>Show a preview line on note cards</td><td>Adds the first lines to tall cards only. Compact rows never show it.</td><td>Off</td></tr>
+            <tr><td>Notes folder</td><td>The path in use, with <strong>Copy path</strong>.</td><td><code>Documents/EloraNotes</code></td></tr>
+            <tr><td>Shortcuts</td><td>A compact reference: formatting, find, search, palette, Tab and Enter.</td><td>—</td></tr>
+            <tr><td>Shared library</td><td>Address, port, password, name, identifier, key, colour, Connect/Disconnect and Forget key. See <a href="#sharing">Shared notes</a>.</td><td>Not connected</td></tr>
+            <tr><td>Updates</td><td>The running version, a check on demand, and <strong>Update and restart</strong>. See <a href="#updates">Updates</a>.</td><td>—</td></tr>
+            <tr><td>Reset all settings to defaults</td><td>Restores the theme, colours, sizes, bar, cards, sort and colour; notes, folders and the server profile stay.</td><td>—</td></tr>
+          </tbody>
+        </table>
+        <p>Window size, position and maximised state are saved without a setting; so are folded folders, the sort order and the last export folder. The formatting bar's text colour (<code>#4ECDFF</code>) is a formatting default rather than a Settings control — pick another with the colour swatch beside <strong>A Text Color</strong> and it is remembered.</p>
+      </section>
+
+      <!-- 25 ------------------------------------------------------------ -->
+      <section class="docs-section" id="themes">
+        <h2><span class="num">25</span> Themes</h2>
+        <p>Pick a theme in Settings or from the command palette; it applies to the whole window at once.</p>
+        <table>
+          <thead><tr><th scope="col">Theme</th><th scope="col">Character</th></tr></thead>
+          <tbody>
+            <tr><td>Obsidian</td><td>Dark slate with a soft violet accent. The default.</td></tr>
+            <tr><td>Paper</td><td>Warm light paper, dark ink, quiet borders.</td></tr>
+            <tr><td>Nordic</td><td>Cold, arctic dark with a pale blue accent.</td></tr>
+            <tr><td>Matcha</td><td>Soft sage light, low contrast, green accent.</td></tr>
+            <tr><td>Sepia</td><td>Warm, aged paper with brown ink.</td></tr>
+            <tr><td>Midnight</td><td>Deep blue-black with a cool accent.</td></tr>
+            <tr><td>Matugen</td><td>Colours generated from your wallpaper by <code>matugen</code>.</td></tr>
+          </tbody>
+        </table>
+        <p>Colours can be overridden per part without changing the theme: background, sidebar, text, accent, pin colour, muted text, borders and danger. The formatting bar's glow is separate — its strength and its default colour live in the same window.</p>
+
+        <h3>Matugen</h3>
+        <ol>
+          <li>Copy <code>matugen/config.toml</code> from the repository into <code>~/.config/matugen/config.toml</code> and point its <code>input_path</code> at the repository's <code>matugen/elora.json</code>.</li>
+          <li>Generate colours from a wallpaper: <code>matugen image ~/Pictures/wallpaper.jpg</code>. This writes <code>~/.config/elora/matugen.json</code>.</li>
+          <li>Choose <strong>Matugen</strong> in Settings or the palette. The colours load when selected and at startup.</li>
+        </ol>
+        <p>After regenerating colours, switch to another theme and back, or restart the app, to pick them up. Missing colours fall back to the Obsidian palette. The Flatpak reads the same <code>~/.config/elora/matugen.json</code> (mounted read-only), so wallpaper colours carry over without a second copy.</p>
+        <p>The window's size and place, the folded folders and the selected theme all persist, so the next launch opens exactly where the last one was left.</p>
+      </section>
+
+      <!-- 26 ------------------------------------------------------------ -->
+      <section class="docs-section" id="shortcuts">
+        <h2><span class="num">26</span> Keyboard shortcuts</h2>
+        <p>On macOS, <kbd>Cmd</kbd> replaces <kbd>Ctrl</kbd> wherever the app accepts <kbd>Cmd</kbd>; the editing shortcuts that are listed with <kbd>Ctrl</kbd> also answer to <kbd>Cmd</kbd>.</p>
+        <table>
+          <thead><tr><th scope="col">Shortcut</th><th scope="col">Action</th></tr></thead>
+          <tbody>
+            <tr><td><kbd>Ctrl K</kbd> / <kbd>Ctrl Shift P</kbd></td><td>Command palette and quick note switcher</td></tr>
+            <tr><td><kbd>Ctrl N</kbd></td><td>New blank note</td></tr>
+            <tr><td><kbd>Ctrl D</kbd></td><td>Open or create today's daily note</td></tr>
+            <tr><td><kbd>Ctrl F</kbd></td><td>Find in the open note</td></tr>
+            <tr><td><kbd>Ctrl Shift F</kbd></td><td>Search all notes (focuses the sidebar search)</td></tr>
+            <tr><td><kbd>Ctrl P</kbd></td><td>Pin or unpin the current note</td></tr>
+            <tr><td><kbd>Ctrl E</kbd></td><td>Toggle Markdown preview</td></tr>
+            <tr><td><kbd>Ctrl Shift E</kbd></td><td>Toggle split editor and live preview</td></tr>
+            <tr><td><kbd>Ctrl \</kbd></td><td>Toggle distraction-free focus mode</td></tr>
+            <tr><td><kbd>Ctrl ,</kbd></td><td>Open Settings</td></tr>
+            <tr><td><kbd>Ctrl B</kbd></td><td>Bold the selection</td></tr>
+            <tr><td><kbd>Ctrl I</kbd></td><td>Italicise the selection</td></tr>
+            <tr><td><kbd>Ctrl Shift H</kbd></td><td>Glow-highlight the selection</td></tr>
+            <tr><td><kbd>Ctrl Z</kbd></td><td>Undo</td></tr>
+            <tr><td><kbd>Ctrl Shift Z</kbd> / <kbd>Ctrl Y</kbd></td><td>Redo</td></tr>
+            <tr><td><kbd>Ctrl V</kbd></td><td>Paste a screenshot or picture as an attachment</td></tr>
+            <tr><td><kbd>Tab</kbd> / <kbd>Shift Tab</kbd></td><td>Indent or unindent the caret's line, or every selected line</td></tr>
+            <tr><td><kbd>Enter</kbd></td><td>Continue every quote and list marker the line sits in; numbers count on, done tasks reset, an empty item loses just that level</td></tr>
+            <tr><td><kbd>Shift Enter</kbd></td><td>Start a plain line inside the same item or quote, aligned with its text</td></tr>
+            <tr><td><kbd>Esc</kbd></td><td>Close the find bar, the palette or a confirmation; clear the search, tag filter and section</td></tr>
+          </tbody>
+        </table>
+        <p>Right-clicking in the editor opens the formatting menu, which needs no shortcut. In the command palette, <kbd>↑</kbd>/<kbd>↓</kbd> move and <kbd>Enter</kbd> runs; in the find bar, <kbd>Enter</kbd>/<kbd>Shift Enter</kbd> step through matches.</p>
+      </section>
+
+      <!-- 27 ------------------------------------------------------------ -->
+      <section class="docs-section" id="updates">
+        <h2><span class="num">27</span> Updates</h2>
+        <p>On launch the app compares its version with the latest GitHub release. When one is newer it offers <strong>Update now</strong> or <strong>Later</strong>; <strong>Later</strong> dismisses the prompt for that run, and a failed launch-time check (for example while offline) stays silent. Before installing, the downloaded build is started once to prove it runs on this machine.</p>
+        <p>What an update does depends on how the copy was installed:</p>
+        <ul>
+          <li><strong>AppImage</strong> — the new image is downloaded beside the old one, started once, then swapped in and relaunched.</li>
+          <li><strong>Windows setup</strong> — the new installer runs silently over the old install, keeping shortcuts and the uninstall entry correct, and the app restarts.</li>
+          <li><strong>macOS app bundle</strong> — the new <code>EloraNotes.app</code> replaces the old one, which is cleaned up on the next launch.</li>
+          <li><strong>Portable exe or tarball binary</strong> — only the executable is replaced, so it has to live in a writable folder.</li>
+          <li><strong>Flatpak</strong> — the bundle's launcher runs a writable copy from <code>~/.local/share/EloraNotes</code>, so the update replaces that binary and restarts like the portable build; the sandbox stays as installed.</li>
+        </ul>
+        <p><strong>Settings → Updates</strong> shows the version you are running and has the same check on demand, so an update never has to wait for the next launch. The collaboration server is <em>not</em> updated by the app: download the new server build and restart its service as described in <a href="#admin">Server upkeep</a>.</p>
+      </section>
+
+      <!-- 28 ------------------------------------------------------------ -->
       <section class="docs-section" id="install">
-        <h2><span class="num">04</span> Install</h2>
+        <h2><span class="num">28</span> Install and uninstall</h2>
         <p>Every release ships an installer and a portable build for each platform. Grab them from the <a href="https://github.com/noxilith/EloraNotes/releases/latest" target="_blank" rel="noreferrer">latest release</a>.</p>
         <table>
-          <thead>
-            <tr><th scope="col">Platform</th><th scope="col">Installer</th><th scope="col">Portable</th></tr>
-          </thead>
+          <thead><tr><th scope="col">Platform</th><th scope="col">Installer</th><th scope="col">Portable</th></tr></thead>
           <tbody>
             <tr><td>Linux</td><td><code>.flatpak</code></td><td><code>.AppImage</code> or <code>.tar.gz</code></td></tr>
             <tr><td>Windows</td><td><code>-setup.exe</code></td><td><code>-portable.exe</code></td></tr>
@@ -133,12 +927,12 @@
         <p>The Flatpak is the installable build — it appears in your app menu and updates itself from this repository's releases.</p>
         <pre><code>flatpak install --user ./EloraNotes-&lt;version&gt;-linux-x86_64.flatpak
 flatpak run io.github.noxilith.EloraNotes</code></pre>
-        <p>The bundle is self-hosted rather than published to Flathub, so <code>flatpak update</code> has no remote to pull from and will always say there is nothing to do. Updates arrive through the app's own <em>Update and restart</em>. To move to a newer bundle by hand, download it and run the same <code>flatpak install --user</code> command again.</p>
-        <p>The AppImage is the portable build: a single file you can keep anywhere.</p>
+        <p>The bundle is self-hosted rather than published to Flathub, so <code>flatpak update</code> has no remote to pull from and will always say there is nothing to do. Updates arrive through the app's own <em>Update and restart</em>. To move to a newer bundle by hand, download it and run the same <code>flatpak install --user</code> command again; the launcher swaps the writable copy for the one in the new bundle.</p>
+        <p>The AppImage is the portable build — a single file you can keep anywhere:</p>
         <pre><code>chmod +x EloraNotes-&lt;version&gt;-linux-x86_64.AppImage
 ./EloraNotes-&lt;version&gt;-linux-x86_64.AppImage</code></pre>
         <p>The tarball holds the bare <code>elora</code> binary if you would rather put it on your <code>PATH</code>:</p>
-        <pre><code>tar -xzf EloraNotes-0.7.0-linux-x86_64.tar.gz
+        <pre><code>tar -xzf EloraNotes-&lt;version&gt;-linux-x86_64.tar.gz
 sudo install -Dm755 elora /usr/local/bin/elora</code></pre>
 
         <h3>Windows</h3>
@@ -151,28 +945,16 @@ sudo install -Dm755 elora /usr/local/bin/elora</code></pre>
         <h3>Uninstalling</h3>
         <ul>
           <li><strong>Linux (Flatpak):</strong> <code>flatpak uninstall io.github.noxilith.EloraNotes</code>. Your notes stay in <code>~/Documents/EloraNotes</code>; the updatable copy of the app lives in <code>~/.local/share/EloraNotes</code> and can be deleted once the bundle is gone.</li>
-          <li><strong>Linux (AppImage or tarball):</strong> delete the file.</li>
-          <li><strong>Windows:</strong> Settings → Apps → Installed apps → EloraNotes → Uninstall.</li>
+          <li><strong>Linux (AppImage or tarball):</strong> delete the file, and the binary from <code>/usr/local/bin</code> if you installed it there.</li>
+          <li><strong>Windows:</strong> Settings → Apps → Installed apps → EloraNotes → Uninstall. The portable exe is just a file.</li>
           <li><strong>macOS:</strong> drag <code>EloraNotes.app</code> from Applications to the Trash.</li>
         </ul>
-        <p>Your notes are plain <code>.md</code> files and stay where they are either way.</p>
+        <p>Your notes are plain <code>.md</code> files and stay where they are either way. Removing the app does not remove them; deleting the notes folder is a separate, deliberate act.</p>
       </section>
 
-      <section class="docs-section" id="updates">
-        <h2><span class="num">05</span> Updates</h2>
-        <p>On launch the app compares its version with the latest GitHub release and, when one is newer, offers <em>Update now</em> or <em>Later</em>. What an update does depends on how the copy was installed:</p>
-        <ul>
-          <li><strong>AppImage:</strong> the new image is downloaded beside the old one, started once to prove it runs, then swapped in and relaunched.</li>
-          <li><strong>Windows setup:</strong> the new installer runs silently over the old install, keeping shortcuts and the uninstall entry correct, then the app restarts.</li>
-          <li><strong>macOS app bundle:</strong> the new <code>EloraNotes.app</code> replaces the old one, which is cleaned up on the next launch.</li>
-          <li><strong>Portable exe or tarball binary:</strong> only the executable is replaced, so it has to live in a writable folder.</li>
-          <li><strong>Flatpak:</strong> the bundle's launcher runs a writable copy from <code>~/.local/share/EloraNotes</code>, so the update replaces that binary and restarts like the portable build. The sandbox itself stays as installed.</li>
-        </ul>
-        <p><em>Settings → Updates</em> shows the version you are running, checks on demand and installs the result, so you never have to wait for the next launch.</p>
-      </section>
-
+      <!-- 29 ------------------------------------------------------------ -->
       <section class="docs-section" id="source">
-        <h2><span class="num">06</span> Run from source</h2>
+        <h2><span class="num">29</span> Run from source</h2>
         <p>You need a Rust toolchain. On Linux, NixOS and macOS the repository includes a launcher that sets up the environment:</p>
         <pre><code>./run.sh</code></pre>
         <p>Otherwise build and run with Cargo:</p>
@@ -182,10 +964,53 @@ sudo install -Dm755 elora /usr/local/bin/elora</code></pre>
 ELORA_SERVER_DIR=~/.config/elora-server ./target/release/elora-server init
 ./target/release/elora-server run</code></pre>
         <p>Notes and settings are found in <code>Documents/EloraNotes</code> unless you point the app elsewhere with <code>--dir</code> or <code>ELORA_NOTES_DIR</code>.</p>
+        <p>For development, <code>cargo test</code> runs the unit and integration suites, and <code>cargo clippy --all-targets -- -D warnings</code> with <code>cargo fmt --check</code> is what CI enforces. The app and server share the protocol in <code>src/net.rs</code>; a client and server built from different protocol versions refuse each other rather than guessing.</p>
       </section>
 
+      <!-- 30 ------------------------------------------------------------ -->
+      <section class="docs-section" id="faq">
+        <h2><span class="num">30</span> FAQ</h2>
+
+        <h3>Can I sync notes with Dropbox, OneDrive or Syncthing?</h3>
+        <p>You can put the notes folder inside a synced folder and let the file sync service copy it. That is file sync, not live collaboration: if two machines edit the same note at the same time, the service will produce a conflicted copy and EloraNotes has no way to merge it. Use the <a href="#sharing">shared library</a> when two people need the same note at the same time; use folder sync for one person moving between machines, and let it settle before editing elsewhere.</p>
+
+        <h3>Can I have more than one vault?</h3>
+        <p>Not inside the window. The app opens one notes folder at a time; relaunch with <code>--dir</code> or <code>ELORA_NOTES_DIR</code> for another. The shared library is separate from the local vault, so a connected server effectively gives you a second set of notes in the same window.</p>
+
+        <h3>Is there encryption or a password on my local notes?</h3>
+        <p>No. Local notes are plain Markdown; use full-disk encryption (FileVault, BitLocker, LUKS) if the disk needs protecting. The shared library is encrypted in transit with TLS, but the server stores notes in the clear so it can serve them.</p>
+
+        <h3>Does it need an account or the internet?</h3>
+        <p>No account, and no internet for local notes. The app reaches the network only for the update check, pictures written with <code>http(s)</code> links, and a shared library you configured.</p>
+
+        <h3>Is there a mobile app?</h3>
+        <p>No. EloraNotes is a desktop app for Linux, macOS and Windows.</p>
+
+        <h3>Why does the file name not change when I rename a note?</h3>
+        <p>The file name is an ID fixed when the note is created; the title lives in <code>title:</code>. Keeping the file name stable means pictures, backups and the server's copy never have to chase a moving path. Rename the file by hand if you prefer — the app will read its title from the frontmatter and keep working.</p>
+
+        <h3>Where is a deleted note?</h3>
+        <p>In the notes folder with <code>trashed: true</code>, listed under Trash. Nothing is deleted from disk until you choose <strong>Delete Forever</strong>.</p>
+
+        <h3>What happens if I edit a note in another editor?</h3>
+        <p>Do it while EloraNotes is closed. The app writes the open note on every keystroke, so an external edit made while the note is open will be overwritten. On the server, a note's body is re-read when it is next opened, so editing server files between sessions is fine.</p>
+
+        <h3>How do I reset the look?</h3>
+        <p><strong>Reset all settings to defaults</strong> at the bottom of Settings restores theme, colours, sizes, card style and sort. Notes are untouched. For a complete reset, close the app and delete <code>.elora-settings.json</code> from the notes folder — you will lose the server profile and identifier with it, so copy the identifier first if you rely on it.</p>
+
+        <h3>I lost my identifier. What now?</h3>
+        <p>Notes restricted to the key made from it cannot be opened by a new identifier. Ask the server operator to <a href="#admin">release your name</a>, then clear the identifier from <code>.elora-settings.json</code> (or delete the file) so the next launch makes a fresh one, and have the note's owner add your new identity. If you still have the old computer's settings file, its <code>identifier</code> value is the secret — copy it before resetting anything.</p>
+
+        <h3>Can I run more than one shared library?</h3>
+        <p>The app remembers one server profile at a time. Disconnect, change the address, port and password, and connect to another; the notes of the first library stay on its server and disappear from this window while you are on the second.</p>
+
+        <h3>How do I back everything up?</h3>
+        <p>Copy the notes folder. That includes the settings file, every note and <code>attachments/</code>. If you run a server, copy its data folder as well: the notes, <code>config.json</code>, the certificate and <code>people.json</code> are all in it. Restoring is copying the folders back.</p>
+      </section>
+
+      <!-- 31 ------------------------------------------------------------ -->
       <section class="docs-section" id="license">
-        <h2><span class="num">07</span> License</h2>
+        <h2><span class="num">31</span> License</h2>
         <p>EloraNotes is licensed under the GNU General Public License v3.0 or later. Bundled fonts keep their own licenses: DejaVu and Tabler Icons.</p>
         <p>Source, issues and releases: <a href="https://github.com/noxilith/EloraNotes" target="_blank" rel="noreferrer">github.com/noxilith/EloraNotes</a>.</p>
       </section>

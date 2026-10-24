@@ -18,8 +18,17 @@
   top: 104px;
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 26px;
+  max-height: calc(100vh - 132px);
+  overflow-y: auto;
+  padding-right: 6px;
+  scrollbar-width: thin;
+  scrollbar-color: #2d2b39 transparent;
 }
+
+.docs-nav::-webkit-scrollbar { width: 6px; }
+.docs-nav::-webkit-scrollbar-thumb { background: #2d2b39; border-radius: 99px; }
+.docs-nav::-webkit-scrollbar-track { background: transparent; }
 
 .docs-nav-group {
   display: flex;
@@ -145,6 +154,39 @@
   color: #a4a0b2;
 }
 
+.docs-section ol {
+  counter-reset: docs-step;
+  list-style: none;
+  margin: 0 0 16px;
+  padding: 0;
+  max-width: 68ch;
+}
+
+.docs-section ol li {
+  position: relative;
+  padding-left: 26px;
+  margin-bottom: 11px;
+  font-size: 13px;
+  line-height: 1.85;
+  color: #a4a0b2;
+  counter-increment: docs-step;
+}
+
+.docs-section ol li:before {
+  content: counter(docs-step) ".";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  background: none;
+  font: 10px var(--mono);
+  letter-spacing: .4px;
+  color: #7d76b8;
+  line-height: 2.4;
+}
+
 .docs-section li:before {
   content: "";
   position: absolute;
@@ -216,6 +258,36 @@
 .docs-body td:first-child { color: #ded9ee; white-space: nowrap; }
 .docs-body td code { white-space: nowrap; font-size: 10.5px; }
 
+/* Callouts ------------------------------------------------------------ */
+
+.docs-callout {
+  border: 1px solid var(--line);
+  border-left: 2px solid #aaa2ff66;
+  background: #aaa2ff08;
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin: 0 0 18px;
+  max-width: 68ch;
+}
+
+.docs-callout .label {
+  display: block;
+  font: 9px var(--mono);
+  letter-spacing: 1.2px;
+  color: #948ccb;
+  margin-bottom: 7px;
+}
+
+.docs-callout p { margin: 0; font-size: 12.5px; line-height: 1.8; }
+.docs-callout p + p { margin-top: 8px; }
+.docs-callout ul { margin: 8px 0 0; }
+.docs-callout li:last-child { margin-bottom: 0; }
+.docs-callout.is-warn {
+  border-left-color: #e0b07a66;
+  background: #e0b07a08;
+}
+.docs-callout.is-warn .label { color: #c9a273; }
+
 .docs-body kbd {
   display: inline-block;
   font: 10px var(--mono);
@@ -226,6 +298,17 @@
   border-radius: 5px;
   padding: 2px 6px;
   white-space: nowrap;
+}
+
+/* Narrow desktop: the article column is too slim for a wide table, so the
+   table scrolls inside its own box instead of widening the page. */
+
+@media (max-width: 1120px) {
+  .docs-body table {
+    display: block;
+    overflow-x: auto;
+    max-width: 100%;
+  }
 }
 
 /* Small screens ------------------------------------------------------- */
@@ -241,7 +324,10 @@
     position: static;
     flex-direction: row;
     gap: 22px;
+    max-height: none;
     overflow-x: auto;
+    overflow-y: hidden;
+    padding-right: 0;
     padding-bottom: 4px;
     scrollbar-width: none;
     -webkit-overflow-scrolling: touch;
