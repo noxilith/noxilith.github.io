@@ -73,6 +73,12 @@
         <a href="#connect-trouble">Stuck on Connecting…</a>
       </div>
       <div class="docs-nav-group">
+        <span class="docs-nav-label">ASSISTANTS</span>
+        <a href="#assistants">AI assistants (MCP)</a>
+        <a href="#assistant-safety">Limits, history and undo</a>
+        <a href="#mcp-tools">Tool reference</a>
+      </div>
+      <div class="docs-nav-group">
         <span class="docs-nav-label">REFERENCE</span>
         <a href="#settings">Settings</a>
         <a href="#themes">Themes</a>
@@ -115,6 +121,7 @@
           <li><strong>Keep pictures and tables in the note.</strong> Drop, paste or choose a <a href="#pictures">picture</a>; write pipe <a href="#tables">tables</a> that align and export properly.</li>
           <li><strong>Take it with you.</strong> Export one note or the whole vault as a standalone <a href="#export">HTML site</a>, or import a folder of Markdown files.</li>
           <li><strong>Share a library.</strong> <a href="#sharing">Live editing</a>, presence, per-note <a href="#privacy">privacy</a>, and an identity that survives renaming and follows you to another computer.</li>
+          <li><strong>Work with an AI assistant.</strong> EloraNotes is its own <a href="#assistants">MCP server</a>: an assistant can read, search and write your notes while you watch them appear, you can mark any note <a href="#assistant-safety">read-only for assistants</a>, and every note it overwrites or deletes is kept in an <a href="#assistant-safety">earlier version</a> you can restore.</li>
           <li><strong>Make it yours.</strong> Seven <a href="#themes">themes</a>, per-part colour overrides, text size, glow strength, compact or tall note cards.</li>
           <li><strong>Update itself.</strong> The app checks GitHub on launch, verifies the downloaded build runs, and installs it the way this copy was installed.</li>
         </ul>
@@ -183,8 +190,9 @@ ELORA_NOTES_DIR=~/Notes elora</code></pre>
           <li><strong>Search</strong> filters the list as you type. It looks at titles, bodies and tags; see <a href="#tags">Tags, search and sort</a> for the exact rules.</li>
           <li><strong>Notes, Pinned and Trash</strong> switch sections and carry live counts. The trash button appears once something is in the Trash or you are looking at it.</li>
           <li><strong>Filter</strong> opens one menu of every tag with how many notes carry it. The small arrows button beside it orders each group by last edited, created or title.</li>
+          <li><strong>The robot button</strong> beside the sort button appears once an assistant has made or changed a note. It lists only those notes; click it again to leave the filter. See <a href="#assistants">AI assistants</a>.</li>
           <li><strong>The list</strong> draws pinned notes first, then the shared library and its folders, then local folders alphabetically, then unfiled notes under <strong>All Notes</strong>, then the Trash.</li>
-          <li><strong>The footer</strong> holds four buttons: today's daily note, the command palette, the Ko-fi tip jar (which opens <a href="https://ko-fi.com/noxilith" target="_blank" rel="noreferrer">ko-fi.com/noxilith</a> in your browser), and Settings.</li>
+          <li><strong>The footer</strong> holds five buttons: today's daily note, the command palette, the <a href="#links">note graph</a>, the Ko-fi tip jar (which opens <a href="https://ko-fi.com/noxilith" target="_blank" rel="noreferrer">ko-fi.com/noxilith</a> in your browser), and Settings.</li>
         </ul>
 
         <h3>The note header</h3>
@@ -194,6 +202,7 @@ ELORA_NOTES_DIR=~/Notes elora</code></pre>
           <li><strong>Note icon</strong> opens a searchable picker of Tabler glyphs, shows the chosen glyph on the note's card, and can remove it again.</li>
           <li><strong>Folder menu</strong> files the note under an existing folder, creates a new one, takes it out of its folder, or moves it to a shared library.</li>
           <li><strong>Lock</strong> — only on a shared note — opens <a href="#privacy">Who can see this note</a>.</li>
+          <li><strong>Robot menu</strong> says whether an assistant made or last changed the note, marks it <em>read-only for assistants</em>, and opens its earlier versions. See <a href="#assistant-safety">Limits, history and undo</a>.</li>
           <li><strong>Statistics</strong> show when the note was last edited, its word and character counts, an estimated reading time, and task progress such as <code>2/3</code>.</li>
           <li><strong>Pin, view toggles, copy and trash</strong>: pin the note, switch between Edit, Split and Preview, copy its Markdown, or move it to the Trash (with a confirmation).</li>
         </ul>
@@ -274,6 +283,8 @@ Books, tools and things to build.
             <tr><td><code>trashed</code></td><td>Whether it is in the Trash. The file stays in the folder.</td></tr>
             <tr><td><code>tags</code></td><td>Tags assigned with the chips. Inline <code>#tags</code> in the body count too.</td></tr>
             <tr><td><code>icon</code></td><td>The Tabler glyph shown on the card and in the header.</td></tr>
+            <tr><td><code>author</code>, <code>edited_by</code></td><td><code>ai</code> when an assistant made the note, and when it wrote to the note last. Changing the note's text or title yourself removes <code>edited_by</code>.</td></tr>
+            <tr><td><code>mcp_read_only</code></td><td><code>true</code> when assistants may read the note but not change it.</td></tr>
             <tr><td><code>created_at</code>, <code>updated_at</code></td><td>Timestamps used by the Created and Last edited sort orders.</td></tr>
             <tr><td><code>owner</code>, <code>owner_key</code></td><td>On a shared note: who owns it, and the public key that decides it.</td></tr>
             <tr><td><code>private</code>, <code>shared_with</code>, <code>shared_keys</code></td><td>On a shared note: whether it is restricted, the names to print, and the keys allowed in.</td></tr>
@@ -284,12 +295,13 @@ Books, tools and things to build.
         <p>A new note is named from its title plus the moment it was created, for example <code>meeting-notes-20261024-091244.md</code>. The name is fixed at creation: renaming the note changes <code>title:</code>, not the file, so backups, pictures and the server's copy keep a stable path. Wiki links match titles rather than file names, so renaming a note can still break a link that spells the old title. Two notes created in the same second get a numeric suffix.</p>
 
         <h3>The settings file</h3>
-        <p><code>.elora-settings.json</code> holds the theme, text size, colour overrides, glow, card style, sort order, folded folders, the window's size and position, the last export folder, and — if you use a shared library — the server address, password, your display name and your identifier. It is plain JSON, not encrypted, so treat the notes folder like you would a password file if you have connected to a server. Deleting the file resets the look and the connection; deleting it does not touch any note.</p>
+        <p><code>.elora-settings.json</code> holds the theme, text size, colour overrides, glow, card style, sort order, folded folders, the window's size and position, the last export folder, and — if you use a shared library — the server address, password, your display name and your identifier. It is plain JSON, not encrypted, so treat the notes folder like you would a password file if you have connected to a server. Deleting the file resets the look and the connection; deleting it does not touch any note. It also lists the shared-library notes that assistants may read but not change.</p>
 
         <h3>Pictures and the Import folder</h3>
         <ul>
           <li><code>attachments/</code> holds every picture added by the button, a drop or a paste. Notes refer to them by relative path.</li>
           <li><code>Import/</code> is where you drop <code>.md</code> files for the import command. It is created the first time you run an import.</li>
+          <li><code>.history/</code> is a hidden folder of earlier copies of notes, one subfolder per note. It appears the first time an assistant overwrites or deletes a note; see <a href="#assistant-safety">Limits, history and undo</a>.</li>
           <li>Nothing else is added to the folder by the app. There are no caches or databases to clean up.</li>
         </ul>
         <p>To back up your notes, copy the whole folder; <a href="#server">a shared library</a> is a folder too. Keep the server's own data folder as well if you run one — it holds the certificate, the people list and the library.</p>
@@ -477,7 +489,7 @@ Books, tools and things to build.
         <p>The <strong>Linked from</strong> footer under the editor lists every note whose body contains a link to this one. Click a title there to jump to the note that mentions it. Backlinks are computed from the notes currently loaded, so they update as you write.</p>
 
         <h3>The note graph</h3>
-        <p><strong>Show Note Graph</strong> in the command palette opens a window where every live note drifts along one of a few orbits around a soft centre, one dot per note and one curved line per wiki link. The best-connected notes travel inside, where the eye lands first; quieter notes sit further out. Trashed notes are not in the graph. It is a map of what links to what, not a second editor.</p>
+        <p>The graph button in the sidebar footer, beside Ko-fi, or <strong>Show Note Graph</strong> in the command palette, opens a window where every live note drifts along one of a few orbits around a soft centre, one dot per note and one curved line per wiki link. The best-connected notes travel inside, where the eye lands first; quieter notes sit further out. Trashed notes are not in the graph. It is a map of what links to what, not a second editor.</p>
         <p>Hovering a note slows the orbits so it is easy to click, highlights its links and neighbours, and brings its label and link count to the front. Click a dot to open that note, or drag empty space to spin the whole graph by hand. How much it moves on its own is set by <strong>Note graph motion</strong> under Settings → Appearance: <strong>Orbit</strong> is the normal drift, <strong>Slow</strong> is gentler, and <strong>Still</strong> holds the graph in place until it is dragged.</p>
 
         <h3>Links that lead nowhere</h3>
@@ -537,6 +549,8 @@ Books, tools and things to build.
         <p>The sidebar has two card styles. The default is a compact one-line row: a small icon and the title, so about twice as many notes fit in the list. Hovering a row shows when it was last edited and its tags.</p>
         <p>Settings → <strong>Tall note cards</strong> brings back the taller card, with a date and a tag row. On those cards, Settings → <strong>Show a preview line on note cards</strong> adds the first lines of the note; it is off by default and has no effect on the compact rows, which have no room for it.</p>
         <p>Both styles show a note's own Tabler icon, and — on a shared note somebody else has open — a small brush in each person's colour, which names them on hover. A tall card also carries the date, its tags and a task progress badge such as <code>2/3</code>. Clicking anywhere on a card opens the note; the title is part of the card, so clicking it does not select the text instead.</p>
+
+        <p>A note an assistant creates wears a robot icon until you choose another; see <a href="#assistants">AI assistants</a>.</p>
 
         <h3>Trash</h3>
         <p>The trash button in the header asks for confirmation in place (<strong>Move to Trash</strong> / <strong>Cancel</strong>), then marks the note trashed. Its file stays in the notes folder with <code>trashed: true</code>; it leaves the count, the graph and exports, and appears under <strong>Trash</strong> in the sidebar.</p>
@@ -716,15 +730,22 @@ Books, tools and things to build.
         </table>
 
         <h3>Linux</h3>
-        <pre><code>chmod +x install-elora-server.sh
-sudo ./install-elora-server.sh</code></pre>
+        <pre><code>curl -fsSLO https://github.com/noxilith/EloraNotes/releases/latest/download/install-elora-server.sh
+sudo bash install-elora-server.sh</code></pre>
         <p>The installer asks for the name people see in their sidebar, the port, and the password everyone connects with. It installs the binary to <code>/usr/local/bin/elora-server</code> (or <code>/opt/elora-server/elora-server</code> when <code>/usr/local</code> is not writable), creates the notes folder, generates a self-signed certificate, registers a systemd service that starts at boot, and opens the port in <code>ufw</code> or <code>firewalld</code> when one of those is in charge. It finishes by printing the addresses to hand out and the short certificate code the first client will ask you to confirm.</p>
         <p>On an immutable system such as NixOS, where <code>/etc/systemd/system</code> is read-only, the installer registers a service for your own account instead: the notes move to <code>~/.local/share/elora-server</code>, lingering is switched on so it still starts at boot, and the summary prints the <code>systemctl --user</code> commands. Set <code>ELORA_SERVICE_MODE=system</code> or <code>ELORA_SERVICE_MODE=user</code> to force one. A certificate left by an interrupted install is carried over, so the code clients already trust does not change.</p>
+
+        <p>Before it changes anything, the installer downloads the server, checks it against the release's <code>SHA256SUMS</code> and test-runs it, so a bad download never replaces a server that works. It then waits until the server is really answering on its port before it says it is running (and prints the service's log if it is not), and refuses a port that another program already uses. A system service is also sandboxed: it can only reach the network and its own data folder. A server name with a <code>%</code> in it is fine, and with the answers in the environment (see <a href="#server">scripted installs</a> below) the script works piped into bash too.</p>
 
         <h3>Windows</h3>
         <p>Open PowerShell as Administrator and run:</p>
         <pre><code>powershell -ExecutionPolicy Bypass -File .\install-elora-server.ps1</code></pre>
-        <p>It asks the same questions, installs the binary, creates the notes folder and certificate, registers the startup task <strong>EloraNotes Server</strong>, and opens the port in Windows Firewall. Run it from an elevated shell so the task and the firewall rule can be created.</p>
+        <p>It asks the same questions, checks the download against <code>SHA256SUMS</code> and test-runs it, installs the binary, creates the notes folder and certificate, registers the startup task <strong>EloraNotes Server</strong>, opens the port in Windows Firewall for that program, and waits until the server is answering. Run it from an elevated shell so the task and the firewall rule can be created. It is written for the Windows PowerShell that ships with Windows (5.1) and also runs in PowerShell 7, on 64-bit Windows.</p>
+        <ul>
+          <li><strong>The task keeps the server running.</strong> It starts at boot as SYSTEM, has no time limit, keeps running on battery power, and is restarted every minute if the server exits. A task made with Windows' defaults is stopped after 72 hours and when a laptop is unplugged.</li>
+          <li><strong>The data folder is private.</strong> <code>C:\ProgramData\EloraNotes Server</code> holds the password in <code>config.json</code> and the certificate's private key, so only Administrators and SYSTEM can open it.</li>
+          <li><strong>Its output is kept.</strong> The server's messages go to <code>server.log</code> in that folder, and the previous run's to <code>server.previous.log</code>.</li>
+        </ul>
 
         <h3>Where the server keeps things</h3>
         <table>
@@ -739,8 +760,24 @@ sudo ./install-elora-server.sh</code></pre>
         <p>The server listens on all interfaces by default (<code>bind: "0.0.0.0"</code>) on port <code>7331</code>. Editing a note's file by hand works — the server re-reads a note's body when it is next opened — but an open note is held in memory, so edit between sessions rather than under a live one.</p>
 
         <h3>Updating, uninstalling and reinstalling</h3>
-        <p>Running the installer again on a machine that already has a server is an update, not a second install. It prints what it found (service, binary, settings, how many notes, the certificate code) and asks whether to <strong>update</strong> it, <strong>uninstall</strong> it and keep the notes, <strong>uninstall</strong> it and delete the notes and certificate, or <strong>cancel</strong>. Updating keeps the notes and the certificate, so the code clients trust does not change.</p>
-        <p>For scripted installs, <code>ELORA_ACTION=update</code>, <code>uninstall</code> or <code>purge</code> skips the question (on Windows, set <code>$env:ELORA_ACTION</code> first). With no answer to the prompt, an existing install is updated.</p>
+        <p>Running the installer again on a machine that already has a server is an update, not a second install. It prints what it found (service, binary and version, settings, how many notes, the certificate code) and asks whether to <strong>update</strong> it, <strong>uninstall</strong> it and keep the notes, <strong>uninstall</strong> it and delete the notes and certificate, or <strong>cancel</strong>.</p>
+        <p>An update changes the program, not the setup. It keeps the name, port, <strong>password</strong>, notes and certificate (so the code clients trust does not change), replaces the binary and restarts the server, which is the only way the new program starts running. It asks <em>Keep the current settings?</em> and only asks for a name, port and password again if you answer no. When you do change them, a notes folder you edited into <code>config.json</code> is kept, and the old port is closed in the firewall. On Linux, if the update fails part way, the server that was running is started again.</p>
+        <p>Uninstalling removes the service, the binary and the firewall rule, and keeps the notes unless you chose to delete them. Notes that <code>config.json</code> points outside the server's own folder are never deleted by the installer.</p>
+
+        <h3>Scripted installs</h3>
+        <p>The answers can come from the environment instead of the prompts (on Windows, set <code>$env:NAME = "…"</code> first). With no terminal to ask in, an existing install is updated.</p>
+        <table>
+          <thead><tr><th scope="col">Variable</th><th scope="col">Meaning</th></tr></thead>
+          <tbody>
+            <tr><td><code>ELORA_ACTION</code></td><td><code>update</code>, <code>uninstall</code> or <code>purge</code>; skips the question.</td></tr>
+            <tr><td><code>ELORA_NAME</code></td><td>The name people see in their sidebar.</td></tr>
+            <tr><td><code>ELORA_PORT</code></td><td>The port, 1024 to 65535.</td></tr>
+            <tr><td><code>ELORA_PASSWORD</code></td><td>The password everyone connects with. On Linux, <code>ELORA_PASSWORD_FILE=/path</code> reads it from a file instead. It is never taken from the command line.</td></tr>
+            <tr><td><code>ELORA_VERSION</code></td><td>Install a specific release, for example <code>0.10.2</code>, instead of the latest.</td></tr>
+            <tr><td><code>ELORA_SERVICE_MODE</code></td><td>Linux only: <code>system</code> or <code>user</code>.</td></tr>
+          </tbody>
+        </table>
+        <p>On an existing install, giving a name, port or password means <em>change the settings</em>; giving none of them keeps what is there.</p>
 
         <h3>Reaching it from another network</h3>
         <p>On the same LAN, use the machine's local address (<code>192.168.1.20</code>) and the port. From outside, forward that TCP port on the router once and give people the public IP or a DNS name; give the server machine a fixed LAN address so the rule keeps pointing at it. If the WAN address the router reports differs from <code>curl -4 ifconfig.me</code>, the connection is behind carrier-grade NAT and no port forward can work — put both machines on a VPN such as Tailscale and use the server's address there.</p>
@@ -762,8 +799,9 @@ journalctl --user -u elora-server -f
 
 # Windows
 Start-ScheduledTask -TaskName "EloraNotes Server"
-Stop-ScheduledTask  -TaskName "EloraNotes Server"</code></pre>
-        <p><strong>Keep the app and the server on the same release.</strong> The library needs both sides to speak the same protocol, so a release that changes it leaves the older side refused until it is updated — and server-side fixes only arrive when the server is. Download the new <code>elora-server</code> from the release, re-run the installer (or replace the binary) and restart the service.</p>
+Stop-ScheduledTask  -TaskName "EloraNotes Server"
+Get-Content "C:\ProgramData\EloraNotes Server\server.log" -Tail 50</code></pre>
+        <p><strong>Keep the app and the server on the same release.</strong> The library needs both sides to speak the same protocol, so a release that changes it leaves the older side refused until it is updated — and server-side fixes only arrive when the server is. Download the new installer from the release and run it again: it keeps your settings, password, notes and certificate, replaces the binary and restarts the service. (Replacing the binary by hand also works, but the service must be restarted for the new one to run.)</p>
 
         <h3>Who is who</h3>
         <p><code>elora-server people</code> manages the name list — which display name is bound to which public key. Running <code>elora-server people</code> or <code>elora-server people list</code> prints every claimed name with its key. The short form beside <strong>Your key</strong> in Settings is yours.</p>
@@ -801,6 +839,7 @@ elora-server fingerprint   # the short code clients confirm, and the full finger
         <p>A wrong password or an outdated client says so by itself. Being stuck at <em>Connecting…</em> means the connection never got through; the app gives up on an address after a few seconds and shows the reason under the state line. The usual causes, in the order worth checking:</p>
         <ul>
           <li><strong>The server is not running.</strong> On the server machine: <code>systemctl status elora-server</code>, then <code>journalctl -u elora-server -n 30 --no-pager</code>.</li>
+          <li><strong>"Could not send the handshake: Resource temporarily unavailable" on a server far away.</strong> App builds before 0.10.1 allowed the encrypted handshake only a few milliseconds, so a server further away than the local network could be refused. Update the app to 0.10.1 or newer; the server needs no change.</li>
           <li><strong>It is listening on the wrong address.</strong> <code>ss -ltn | grep 7331</code> should show <code>0.0.0.0:7331</code> or <code>[::]:7331</code>. <code>127.0.0.1:7331</code> means only that machine can reach it: set <code>bind</code> to <code>0.0.0.0</code> in the server's <code>config.json</code> and restart it.</li>
           <li><strong>A firewall drops the port.</strong> The installer opens it in <code>ufw</code> or <code>firewalld</code>; check <code>sudo ufw status</code> if you use another firewall, and check Windows Firewall on a Windows server.</li>
           <li><strong>The router does not forward it.</strong> Forward TCP 7331 to the server machine's LAN address, and give that machine a fixed address so the rule keeps pointing at it.</li>
@@ -812,8 +851,107 @@ elora-server fingerprint   # the short code clients confirm, and the full finger
       </section>
 
       <!-- 24 ------------------------------------------------------------ -->
+      <section class="docs-section" id="assistants">
+        <h2><span class="num">24</span> AI assistants (MCP)</h2>
+        <p>EloraNotes is its own <a href="https://modelcontextprotocol.io" target="_blank" rel="noreferrer">Model Context Protocol</a> server. Start the app with <code>--mcp</code> and an MCP client such as Claude can read, search, write and link your notes, on this computer and in the shared library, with no plugin and no account. It works on the same plain <code>.md</code> files as the window, so both can be open on one notes folder. Available from 0.10.0.</p>
+
+        <h3>Connecting an assistant</h3>
+        <p>Open <strong>Settings → AI assistants (MCP)</strong>. It shows the command that starts the server on this notes folder and copies it two ways: <strong>Copy command</strong> is a ready-made <code>claude mcp add elora-notes -- …</code> line for Claude Code, and <strong>Copy JSON config</strong> is an <code>mcpServers</code> entry for clients that read a config file. The command is the app itself:</p>
+        <pre><code>elora --mcp --dir ~/Documents/EloraNotes</code></pre>
+        <p>An AppImage registers the image and a Flatpak registers <code>flatpak run</code>. The server needs no window, so the same command works from a terminal, a script or a remote session.</p>
+        <p><strong>Test connection</strong> starts the server the way an assistant would, asks for its tools and the vault's facts, and says in a sentence what came back: how many tools and notes, whether it is read-only or limited to a folder, and whether the shared library answered. If the copy you are running sits in a build folder (<code>target/debug</code> or <code>target/release</code>), Settings warns you, because the command stops working the next time that build is replaced; register an installed copy instead.</p>
+
+        <h3>What an assistant can do</h3>
+        <p>An assistant gets 17 tools, listed in the <a href="#mcp-tools">tool reference</a>. It can list, read and search notes (titles, bodies and tags), follow wiki links and backlinks, browse tags and folders, find links that lead nowhere, create and edit notes, rename a note (every <code>[[link]]</code> to it is rewritten), change a note's tags, folder, pin and icon, move notes to the Trash and restore them, and write the daily note. Permanent deletion works only on a note that is already in the Trash and has to be confirmed.</p>
+
+        <h3>It shows up as it happens</h3>
+        <p>EloraNotes watches the notes folder, so a note an assistant creates, edits, trashes or deletes appears in the open window within about a second, with no restart. If it changes the note you have open, the editor shows the new text. A short notice says what happened ("An assistant added …", "… was changed by an assistant").</p>
+        <ul>
+          <li><strong>A robot icon.</strong> A note an assistant creates gets the robot glyph until you choose another icon for it.</li>
+          <li><strong>A robot filter.</strong> Once an assistant has made or changed a note, a robot button appears beside the sort button in the sidebar. It lists only those notes; click it again to leave the filter.</li>
+          <li><strong>Marks in the file.</strong> <code>author: ai</code> on a note an assistant made, and <code>edited_by: ai</code> on a note it wrote to last. The second goes away as soon as you change the note's text or title yourself, so the filter shows what an assistant touched that you have not looked at since.</li>
+        </ul>
+        <p>If you type in a note at the same moment another program saves it, the app keeps the other version as a separate note called "… (edited outside EloraNotes)" instead of overwriting it.</p>
+
+        <h3>The shared library</h3>
+        <p>If you use a <a href="#sharing">shared library</a>, the assistant reaches it too. It connects with the server settings the app saved in <code>.elora-settings.json</code>, <strong>as you</strong>: with your name and your identifier, so the server's own rules about who may see and change a note apply, and it can do whatever you can there. The server's certificate must already be trusted, so connect once from the app first.</p>
+        <p>Shared notes are listed, read, created (<code>create_note</code> with <code>shared: true</code>), edited, renamed, moved between folders, pinned, trashed and deleted like local ones, and are marked <code>shared</code> in the results. A few things differ:</p>
+        <ul>
+          <li>Search matches a shared note's title, tags and folder, not its text; <code>read_note</code> gives the text.</li>
+          <li>Renaming a note rewrites links to it in notes on this computer, not inside shared notes.</li>
+          <li>Earlier versions are not kept for shared notes, and shared notes carry no <code>author</code> or <code>edited_by</code> mark: the server owns their files.</li>
+        </ul>
+        <p>If the server cannot be reached, the local notes keep working and the results say why the shared ones are missing. <code>--no-shared</code> leaves the library out altogether.</p>
+
+        <h3>When it does not work</h3>
+        <ul>
+          <li><strong>The tools are missing after you registered the server.</strong> MCP clients load their servers when a session starts; start a new session.</li>
+          <li><strong>"Could not start" in Test connection.</strong> The path in the command is wrong or the file moved. Register the command Settings shows now.</li>
+          <li><strong>The shared library is unavailable.</strong> The result says why: the server's certificate has not been trusted yet (connect once from the app), your name or identifier is not set under <strong>Settings → Shared library</strong>, or the server is unreachable. The assistant retries after about half a minute.</li>
+          <li><strong>A change is refused.</strong> The note is marked read-only for assistants, or the server was started read-only or limited to another folder; see <a href="#assistant-safety">Limits, history and undo</a>.</li>
+        </ul>
+      </section>
+
+      <!-- 25 ------------------------------------------------------------ -->
+      <section class="docs-section" id="assistant-safety">
+        <h2><span class="num">25</span> Limits, history and undo</h2>
+        <p>Three things keep you in charge of what an assistant does: a mark on any single note, options on the server, and a copy of whatever it overwrites or deletes.</p>
+
+        <h3>Make a note read-only for assistants</h3>
+        <p>Open the <strong>robot menu</strong> in the note's header and tick <strong>Assistants can read, not change</strong>. The assistant can still read the note and follow its links, but it cannot edit, rename, change the properties of, trash or delete it, and renaming another note will not rewrite the links inside it. No assistant tool can untick the box.</p>
+        <p>On a note on this computer the mark is <code>mcp_read_only: true</code> in the note's own frontmatter, so it travels with the file. A shared note has no file here, so the mark is kept in <code>.elora-settings.json</code> on this computer only: another person's assistant, or one working directly on the server, is not bound by it.</p>
+
+        <h3>Start the server read-only or confined</h3>
+        <p>Settings → AI assistants (MCP) builds these into the command, or add them yourself:</p>
+        <table>
+          <thead><tr><th scope="col">Option</th><th scope="col">Effect</th></tr></thead>
+          <tbody>
+            <tr><td><code>--read-only</code></td><td>Every tool that would change something is refused: creating, editing, renaming, changing properties, trashing, restoring, deleting and the daily note. Reading and searching work.</td></tr>
+            <tr><td><code>--folder NAME</code></td><td>The assistant sees only that folder and the folders inside it. New notes, and the daily note, are filed there, and nothing can be moved out of it.</td></tr>
+            <tr><td><code>--no-shared</code></td><td>Leaves the shared library out even when one is set up.</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Earlier versions</h3>
+        <p>Before an assistant overwrites or deletes a note on this computer, the file as it was is copied into a hidden <code>.history</code> folder inside the notes folder, one subfolder per note. The newest 20 copies of each note are kept, and an identical copy is not saved twice. A note an assistant has only just created has nothing to keep.</p>
+        <p>To undo a change, open the note, open the robot menu and choose <strong>Earlier versions…</strong>. The window lists the copies by time and word count and previews the one you select. <strong>Restore this version</strong> puts its text and title back. The note stays where it is — its folder, pin, Trash state and read-only mark are not changed — and the text it had a moment ago is kept first, so a restore can itself be undone.</p>
+        <p>A note that was deleted has no screen of its own. Its copies stay in <code>.history/&lt;note id&gt;/</code>, named by time; copy the one you want back into the notes folder as a <code>.md</code> file.</p>
+
+        <div class="docs-callout is-warn">
+          <span class="label">WHAT THESE LIMITS ARE</span>
+          <p>They limit what the <em>MCP server</em> will do. An assistant that can also run commands or open files on your computer can change the notes folder directly, whatever is marked. To keep an assistant out of notes, give it a server limited with <code>--folder</code> or <code>--read-only</code>, and keep the notes it should not touch where it has no file access.</p>
+        </div>
+      </section>
+
+      <!-- 26 ------------------------------------------------------------ -->
+      <section class="docs-section" id="mcp-tools">
+        <h2><span class="num">26</span> Tool reference</h2>
+        <p>Every tool that takes a <code>note</code> accepts the note's title (case-insensitive) or its id, which is its file name without <code>.md</code>. Results are JSON; every note in them says whether it is <code>shared</code>, whether assistants may change it (<code>read_only</code>) and whether an assistant made it (<code>made_by_ai</code>).</p>
+        <table>
+          <thead><tr><th scope="col">Tool</th><th scope="col">Arguments</th><th scope="col">What it does</th></tr></thead>
+          <tbody>
+            <tr><td><code>vault_info</code></td><td>—</td><td>Where the vault is, how many notes it holds, whether the server is read-only or limited to a folder, and the shared library's status.</td></tr>
+            <tr><td><code>list_notes</code></td><td><code>folder</code>, <code>tag</code>, <code>trashed</code>, <code>limit</code></td><td>Notes, newest first with pinned first, without their text. <code>trashed</code> lists the Trash.</td></tr>
+            <tr><td><code>read_note</code></td><td><code>note</code></td><td>A note's text, tags, folder, links, backlinks and task progress.</td></tr>
+            <tr><td><code>search_notes</code></td><td><code>query</code>, <code>limit</code>, <code>include_trashed</code></td><td>Ranked results with an excerpt. Words are ANDed and a <code>#tag</code> word filters by tag.</td></tr>
+            <tr><td><code>create_note</code></td><td><code>title</code>, <code>body</code>, <code>tags</code>, <code>folder</code>, <code>pinned</code>, <code>icon</code>, <code>shared</code></td><td>Makes a note with a robot icon unless <code>icon</code> is given; <code>shared: true</code> makes it in the shared library.</td></tr>
+            <tr><td><code>update_note</code></td><td><code>note</code> and one of <code>body</code>, <code>append</code>, <code>prepend</code></td><td>Replaces, appends to or prepends to a note's text.</td></tr>
+            <tr><td><code>rename_note</code></td><td><code>note</code>, <code>new_title</code></td><td>Renames a note and rewrites the <code>[[links]]</code> to it in other notes on this computer.</td></tr>
+            <tr><td><code>set_note_properties</code></td><td><code>note</code>, <code>tags</code>, <code>folder</code>, <code>pinned</code>, <code>icon</code></td><td>Changes only what is given. <code>tags</code> replaces the explicit tags (inline <code>#tags</code> stay); an empty <code>folder</code> or <code>icon</code> clears it. The icon must be a Tabler icon name.</td></tr>
+            <tr><td><code>trash_note</code>, <code>restore_note</code></td><td><code>note</code></td><td>Moves a note to the Trash, or back. Trashing unpins it.</td></tr>
+            <tr><td><code>delete_note</code></td><td><code>note</code>, <code>confirm</code></td><td>Deletes a note that is already in the Trash for good; <code>confirm</code> must be true. A copy is kept in the history.</td></tr>
+            <tr><td><code>get_backlinks</code>, <code>get_links</code></td><td><code>note</code></td><td>The notes that link to a note, or the links it makes and whether each one resolves.</td></tr>
+            <tr><td><code>list_tags</code>, <code>list_folders</code></td><td>—</td><td>Every tag or folder with the number of notes in it.</td></tr>
+            <tr><td><code>daily_note</code></td><td><code>append</code></td><td>Today's daily note, made from the template if it does not exist yet; <code>append</code> adds text to the end.</td></tr>
+            <tr><td><code>find_unresolved_links</code></td><td>—</td><td>Every <code>[[link]]</code> that points at a note that does not exist.</td></tr>
+          </tbody>
+        </table>
+        <p>An assistant never gets a tool to change the read-only mark, the server's options or the history.</p>
+      </section>
+
+      <!-- 27 ------------------------------------------------------------ -->
       <section class="docs-section" id="settings">
-        <h2><span class="num">24</span> Settings</h2>
+        <h2><span class="num">27</span> Settings</h2>
         <p>Settings opens from the footer gear or <kbd>Ctrl ,</kbd>. The window scrolls, because it also carries the notes path, the shortcut reference and the library controls. Every change applies immediately and is saved to <code>.elora-settings.json</code>.</p>
         <table>
           <thead><tr><th scope="col">Setting</th><th scope="col">What it does</th><th scope="col">Default</th></tr></thead>
@@ -830,6 +968,7 @@ elora-server fingerprint   # the short code clients confirm, and the full finger
             <tr><td>Notes folder</td><td>The path in use, with <strong>Copy path</strong>.</td><td><code>Documents/EloraNotes</code></td></tr>
             <tr><td>Shortcuts</td><td>A compact reference: formatting, find, search, palette, Tab and Enter.</td><td>—</td></tr>
             <tr><td>Shared library</td><td>Address, port, password, name, identifier, key, colour, Connect/Disconnect and Forget key. See <a href="#sharing">Shared notes</a>.</td><td>Not connected</td></tr>
+            <tr><td>AI assistants (MCP)</td><td>The command that starts the assistant server on this notes folder, with <em>Read-only</em>, <em>Leave out the shared library</em> and <em>Only this folder</em> options, <strong>Copy command</strong>, <strong>Copy JSON config</strong> and <strong>Test connection</strong>. See <a href="#assistants">AI assistants</a>.</td><td>—</td></tr>
             <tr><td>Updates</td><td>The running version, a check on demand, and <strong>Update and restart</strong>. See <a href="#updates">Updates</a>.</td><td>—</td></tr>
             <tr><td>Reset all settings to defaults</td><td>Restores the theme, colours, text size, bar, cards, graph motion, sort and caret colour; notes, folders and the server profile stay.</td><td>—</td></tr>
           </tbody>
@@ -837,9 +976,9 @@ elora-server fingerprint   # the short code clients confirm, and the full finger
         <p>Window size, position and maximised state are saved without a setting; so are folded folders, the sort order and the last export folder. The formatting bar's text colour (<code>#4ECDFF</code>) is a formatting default rather than a Settings control — pick another with the colour swatch beside <strong>A Text Color</strong> and it is remembered.</p>
       </section>
 
-      <!-- 25 ------------------------------------------------------------ -->
+      <!-- 28 ------------------------------------------------------------ -->
       <section class="docs-section" id="themes">
-        <h2><span class="num">25</span> Themes</h2>
+        <h2><span class="num">28</span> Themes</h2>
         <p>Pick a theme in Settings or from the command palette; it applies to the whole window at once.</p>
         <table>
           <thead><tr><th scope="col">Theme</th><th scope="col">Character</th></tr></thead>
@@ -865,9 +1004,9 @@ elora-server fingerprint   # the short code clients confirm, and the full finger
         <p>The window's size and place, the folded folders and the selected theme all persist, so the next launch opens exactly where the last one was left.</p>
       </section>
 
-      <!-- 26 ------------------------------------------------------------ -->
+      <!-- 29 ------------------------------------------------------------ -->
       <section class="docs-section" id="shortcuts">
-        <h2><span class="num">26</span> Keyboard shortcuts</h2>
+        <h2><span class="num">29</span> Keyboard shortcuts</h2>
         <p>On macOS, <kbd>Cmd</kbd> replaces <kbd>Ctrl</kbd> wherever the app accepts <kbd>Cmd</kbd>; the editing shortcuts that are listed with <kbd>Ctrl</kbd> also answer to <kbd>Cmd</kbd>.</p>
         <table>
           <thead><tr><th scope="col">Shortcut</th><th scope="col">Action</th></tr></thead>
@@ -897,9 +1036,9 @@ elora-server fingerprint   # the short code clients confirm, and the full finger
         <p>Right-clicking in the editor opens the formatting menu, which needs no shortcut. In the command palette, <kbd>↑</kbd>/<kbd>↓</kbd> move and <kbd>Enter</kbd> runs; in the find bar, <kbd>Enter</kbd>/<kbd>Shift Enter</kbd> step through matches.</p>
       </section>
 
-      <!-- 27 ------------------------------------------------------------ -->
+      <!-- 30 ------------------------------------------------------------ -->
       <section class="docs-section" id="updates">
-        <h2><span class="num">27</span> Updates</h2>
+        <h2><span class="num">30</span> Updates</h2>
         <p>On launch the app compares its version with the latest GitHub release. When one is newer it offers <strong>Update now</strong> or <strong>Later</strong>; <strong>Later</strong> dismisses the prompt for that run, and a failed launch-time check (for example while offline) stays silent. Before installing, the downloaded build is started once to prove it runs on this machine.</p>
         <p>What an update does depends on how the copy was installed:</p>
         <ul>
@@ -912,9 +1051,9 @@ elora-server fingerprint   # the short code clients confirm, and the full finger
         <p><strong>Settings → Updates</strong> shows the version you are running and has the same check on demand, so an update never has to wait for the next launch. The collaboration server is <em>not</em> updated by the app: download the new server build and restart its service as described in <a href="#admin">Server upkeep</a>.</p>
       </section>
 
-      <!-- 28 ------------------------------------------------------------ -->
+      <!-- 31 ------------------------------------------------------------ -->
       <section class="docs-section" id="install">
-        <h2><span class="num">28</span> Install and uninstall</h2>
+        <h2><span class="num">31</span> Install and uninstall</h2>
         <p>Every release ships an installer and a portable build for each platform. Grab them from the <a href="https://github.com/noxilith/EloraNotes/releases/latest" target="_blank" rel="noreferrer">latest release</a>.</p>
         <table>
           <thead><tr><th scope="col">Platform</th><th scope="col">Installer</th><th scope="col">Portable</th></tr></thead>
@@ -954,9 +1093,9 @@ sudo install -Dm755 elora /usr/local/bin/elora</code></pre>
         <p>Your notes are plain <code>.md</code> files and stay where they are either way. Removing the app does not remove them; deleting the notes folder is a separate, deliberate act.</p>
       </section>
 
-      <!-- 29 ------------------------------------------------------------ -->
+      <!-- 32 ------------------------------------------------------------ -->
       <section class="docs-section" id="source">
-        <h2><span class="num">29</span> Run from source</h2>
+        <h2><span class="num">32</span> Run from source</h2>
         <p>You need a Rust toolchain. On Linux, NixOS and macOS the repository includes a launcher that sets up the environment:</p>
         <pre><code>./run.sh</code></pre>
         <p>Otherwise build and run with Cargo:</p>
@@ -967,11 +1106,12 @@ ELORA_SERVER_DIR=~/.config/elora-server ./target/release/elora-server init
 ./target/release/elora-server run</code></pre>
         <p>Notes and settings are found in <code>Documents/EloraNotes</code> unless you point the app elsewhere with <code>--dir</code> or <code>ELORA_NOTES_DIR</code>.</p>
         <p>For development, <code>cargo test</code> runs the unit and integration suites, and <code>cargo clippy --all-targets -- -D warnings</code> with <code>cargo fmt --check</code> is what CI enforces. The app and server share the protocol in <code>src/net.rs</code>; a client and server built from different protocol versions refuse each other rather than guessing.</p>
+        <p>The server installers are tested too. <code>packaging/server/tests/test-install-linux.sh</code> and <code>test-install-windows.ps1</code> run the real installers against stand-ins for systemd, <code>ufw</code>, Task Scheduler and the firewall, and the stand-in that starts the service starts a real <code>elora-server</code>: <code>ELORA_SERVER_BINARY=target/debug/elora-server packaging/server/tests/test-install-linux.sh</code> (the Windows one runs under <code>pwsh</code> on any system).</p>
       </section>
 
-      <!-- 30 ------------------------------------------------------------ -->
+      <!-- 33 ------------------------------------------------------------ -->
       <section class="docs-section" id="faq">
-        <h2><span class="num">30</span> FAQ</h2>
+        <h2><span class="num">33</span> FAQ</h2>
 
         <h3>Can I sync notes with Dropbox, OneDrive or Syncthing?</h3>
         <p>You can put the notes folder inside a synced folder and let the file sync service copy it. That is file sync, not live collaboration: if two machines edit the same note at the same time, the service will produce a conflicted copy and EloraNotes has no way to merge it. Use the <a href="#sharing">shared library</a> when two people need the same note at the same time; use folder sync for one person moving between machines, and let it settle before editing elsewhere.</p>
@@ -995,7 +1135,7 @@ ELORA_SERVER_DIR=~/.config/elora-server ./target/release/elora-server init
         <p>In the notes folder with <code>trashed: true</code>, listed under Trash. Nothing is deleted from disk until you choose <strong>Delete Forever</strong>.</p>
 
         <h3>What happens if I edit a note in another editor?</h3>
-        <p>Do it while EloraNotes is closed. The app writes the open note on every keystroke, so an external edit made while the note is open will be overwritten. On the server, a note's body is re-read when it is next opened, so editing server files between sessions is fine.</p>
+        <p>The app watches the notes folder, so a change another program saves shows up in the open window within about a second, including in the note you have open. If you type in the same note at the same moment, the app does not overwrite the other version: it keeps it as a separate note called "… (edited outside EloraNotes)". On the server, a note's body is re-read when it is next opened, so editing server files between sessions is fine.</p>
 
         <h3>How do I reset the look?</h3>
         <p><strong>Reset all settings to defaults</strong> at the bottom of Settings restores theme, colours, sizes, card style and sort. Notes are untouched. For a complete reset, close the app and delete <code>.elora-settings.json</code> from the notes folder — you will lose the server profile and identifier with it, so copy the identifier first if you rely on it.</p>
@@ -1008,11 +1148,20 @@ ELORA_SERVER_DIR=~/.config/elora-server ./target/release/elora-server init
 
         <h3>How do I back everything up?</h3>
         <p>Copy the notes folder. That includes the settings file, every note and <code>attachments/</code>. If you run a server, copy its data folder as well: the notes, <code>config.json</code>, the certificate and <code>people.json</code> are all in it. Restoring is copying the folders back.</p>
+
+        <h3>Can an AI assistant use my notes?</h3>
+        <p>Yes, if you register the app as an MCP server; see <a href="#assistants">AI assistants (MCP)</a>. EloraNotes itself sends your notes nowhere: the assistant's own program talks to the app running on your computer, and what it reads goes wherever that assistant sends its conversation. You choose what it can reach with <a href="#assistant-safety">read-only notes</a> and the <code>--folder</code> and <code>--read-only</code> options.</p>
+
+        <h3>How do I undo something an assistant did?</h3>
+        <p>Open the note, open the robot menu above it and choose <strong>Earlier versions…</strong>: before an assistant overwrites or deletes a note, the old text is kept, and any of the last 20 versions can be restored. A note that was deleted has no screen of its own, but its copies are still in the hidden <code>.history</code> folder inside the notes folder and can be copied back by hand. See <a href="#assistant-safety">Limits, history and undo</a>.</p>
+
+        <h3>Can I keep an assistant away from one note?</h3>
+        <p>Yes: tick <strong>Assistants can read, not change</strong> in the note's robot menu. It can then still read the note, but cannot edit, rename, move, trash or delete it, and it has no tool to untick the box. To keep it away from most of your notes, start the server with <code>--folder</code> so it only sees one folder.</p>
       </section>
 
-      <!-- 31 ------------------------------------------------------------ -->
+      <!-- 34 ------------------------------------------------------------ -->
       <section class="docs-section" id="license">
-        <h2><span class="num">31</span> License</h2>
+        <h2><span class="num">34</span> License</h2>
         <p>EloraNotes is licensed under the GNU General Public License v3.0 or later. Bundled fonts keep their own licenses: DejaVu and Tabler Icons.</p>
         <p>Source, issues and releases: <a href="https://github.com/noxilith/EloraNotes" target="_blank" rel="noreferrer">github.com/noxilith/EloraNotes</a>.</p>
       </section>
