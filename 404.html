@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <meta name="referrer" content="no-referrer">
+  <title>EloraNotes</title>
+  <style>body{font-family:system-ui,sans-serif;background:#0b0b0e;color:#e8e8ea;display:grid;place-items:center;min-height:100vh;margin:0}a{color:#8fb59a}</style>
+</head>
+<body>
+  <p id="message">Opening EloraNotes…</p>
+  <script>
+    // https://noxilith.github.io/join/INVITECODE: the invite page reads the code after a "#".
+    var match = location.pathname.match(/^\/join\/([A-Za-z0-9_-]+)\/?$/);
+    if (match) {
+      location.replace("/join/#" + match[1]);
+    } else {
+      document.getElementById("message").innerHTML = 'Page not found. <a href="/">Go to the site</a>.';
+    }
+  </script>
+</body>
+</html>
